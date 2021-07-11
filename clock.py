@@ -50,18 +50,17 @@ class Clock:
         self.canvas.tag_bind("text", "<Button-1>", self.movehand)
         self.canvas.bind("<Configure>", self.updateClockRect)
 
-    def initClockText(self):
+    def initClockText(self):  # adds texts to the clock
 
         for index, char in enumerate(self.numberlst, start=self.options["start"]):
 
-            if index % self.step == 0:
+            if index % self.step != 0:
                 obj = self.canvas.create_oval(0, 0, 5, 5, width=10, tags="text")
 
             else:
                 obj = self.canvas.create_text(0, 0, text=f"{char}", tags="text", font=self.options["textfont"])
 
             if self.current_index == char:
-                print(char)
                 self.current_id = obj
 
     def updateClockRect(self, event):  # updates the size of the circle and moves it to center
@@ -86,24 +85,13 @@ class Clock:
                 y = centerY + radius * math.sin(_angle)
                 x = centerX + radius * math.cos(_angle)
 
-                if index % self.step == 0:
+                if index % self.step != 0:
                     self.canvas.coords(obj, x, y, x + 5, y + 5)
                     continue
 
                 self.canvas.coords(obj, x, y)
 
-            # current_coords = self.canvas.coords(self.current_id)
-            item_bbox = self.canvas.bbox(self.current_id)
-            itemCX, itemCY = (item_bbox[2] + item_bbox[0]) / 2, (item_bbox[3] + item_bbox[1]) / 2
-
-            print(item_bbox, itemCY, itemCX)
-
-            self.canvas.coords(self.hand_line, centerX, centerY, itemCX, itemCY)
-
-            self.canvas.coords(self.hand_end, itemCX-self.options['headsize'],
-                                              itemCY - self.options['headsize'],
-                                              itemCX + self.options['headsize'],
-                                              itemCY + self.options['headsize'])
+            self.updateHand()
 
     def configure(self, **kwargs):  # background, border-color, border-width
         self.options.update(kwargs)
@@ -113,26 +101,38 @@ class Clock:
                                outline=self.options['bdColor'],
                                width=self.options['bdwidth'])
 
-    def movehand(self, event):
-        # print(event, self.canvas.find_withtag('current')[0])
+    def movehand(self, event: tkinter.Event):
+
         self.current_id = self.canvas.find_withtag('current')[0]
+        self.updateHand()
 
-        item_rect = self.canvas.coords(self.current_id)
+    def updateHand(self):
+
         item_bbox = self.canvas.bbox(self.current_id)
-        hand_coords = self.canvas.coords(self.hand_line)
 
-        # self.canvas.create_rectangle(item_bbox, fill='red')
+        centerX, centerY = self.canvas.winfo_width() / 2, self.canvas.winfo_height() / 2
 
         itemCX, itemCY = (item_bbox[2] + item_bbox[0]) / 2, (item_bbox[3] + item_bbox[1]) / 2
 
-        self.current_index = self.canvas.itemcget(self.current_id, "text")
-        print(item_bbox, itemCX, itemCY)
-        self.canvas.coords(self.hand_line, hand_coords[0], hand_coords[1], itemCX, itemCY)
+        self.canvas.coords(self.hand_line, centerX, centerY, itemCX, itemCY)
 
         self.canvas.coords(self.hand_end, itemCX - self.options['headsize'],
-                                           itemCY - self.options['headsize'],
-                                           itemCX + self.options['headsize'],
-                                           itemCY + self.options['headsize'])
+                           itemCY - self.options['headsize'],
+                           itemCX + self.options['headsize'],
+                           itemCY + self.options['headsize'])
+
+        try:
+            self.current_index = self.canvas.itemcget(self.current_id, "text")
+
+        except tkinter.TclError:
+            for obj, number in zip(self.canvas.find_withtag("text"), self.numberlst):
+
+                if self.current_id == obj:
+                    self.current_index = str(number)
+
+
+        print(self.current_index)
+
 
 if __name__ == "__main__":
     root = tkinter.Tk()
