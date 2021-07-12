@@ -4,7 +4,6 @@ from baseclock import BaseClock
 HOURS12 = 0
 HOURS24 = 1
 
-
 class HoursClock(BaseClock):
 
     def __init__(self, canvas: tkinter.Canvas, type: int = HOURS12):
@@ -61,7 +60,7 @@ class MinutesClock(BaseClock):
     def getMinutes(self):
         return self.minutes
 
-# fixme: when step argument is even number raises an error
+
 
 
 if __name__ == "__main__":

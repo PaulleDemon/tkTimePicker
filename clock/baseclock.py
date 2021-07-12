@@ -47,7 +47,7 @@ class BaseClock:
         self._current_id = ""
 
         self._canvas.tag_bind("tkclocktext", "<Button-1>", self.movehand)
-        # self._canvas.bind("<B1-Motion>", self.movehand)
+        self._canvas.bind("<B1-Motion>", self.movehand)
         self._canvas.bind("<Configure>", self.updateClockRect)
 
     def initClockText(self):  # adds texts to the clock
@@ -68,8 +68,18 @@ class BaseClock:
     def setNumberList(self, numberlst: list=None, min: int = None, max: int = None,
                          start: int=None, step=None, replace_step: bool = None):
 
+        if step:
+            self.step = step if step > 0 else 1
+
+        if replace_step:
+            self.replaceStep = replace_step
+
+        if start:
+            self.start = start
+
         if min is not None and max is not None:
-            if step and not replace_step:
+            if self.step and not self.replaceStep:
+                print("YES")
                 self.numberlst = range(min, max + 1, step)
 
             else:
@@ -82,14 +92,6 @@ class BaseClock:
         else:
             raise ValueError("Enter value either through min, max or provide a list")
 
-        if step:
-            self.step = step if step > 0 else 1
-
-        if replace_step:
-            self.replaceStep = replace_step
-
-        if start:
-            self.start = start
 
         if self._options["defaultPointer"] in self.numberlst:
             self.current_index = self._options["defaultPointer"]
@@ -159,9 +161,13 @@ class BaseClock:
         return self.current_index
 
     def movehand(self, event: tkinter.Event):
-        self._current_id = self._canvas.find_withtag('current')[0]
-        self.updateHand()
-        self._canvas.event_generate("<<Changed>>")
+
+        _current_id = self._canvas.find_closest(event.x, event.y)[0]
+
+        if _current_id in self._canvas.find_withtag("tkclocktext"):
+            self._current_id = _current_id
+            self.updateHand()
+            self._canvas.event_generate("<<Changed>>")
 
     def updateHand(self):
 
@@ -198,7 +204,9 @@ if __name__ == "__main__":
     canvas1['bg'] = 'white'
     canvas1.pack(fill='both', expand=1)
 
-    clock = BaseClock(canvas1, min=1, max=12, step=2, bdwidth=10, textoffset=40, start=-2, replace_step=True)
+    clock = BaseClock(canvas1, bdwidth=10, textoffset=40)
+    clock.setNumberList(min=1, max=12, step=2)
+    clock.initClockText()
     clock.configure(handthickness=7, textcolor="blue", textfont=("Times", 30, "bold"), alttextwidth=10)
-    clock.bind("<<Changed>>", lambda a: print(clock.current()))
+    # clock.bind("<<Changed>>", lambda a: print(clock.current()))
     root.mainloop()
