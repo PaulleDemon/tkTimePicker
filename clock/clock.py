@@ -1,8 +1,9 @@
 import tkinter
-from baseclock import BaseClock
+from .baseclock import BaseClock
 
 HOURS12 = 0
 HOURS24 = 1
+
 
 class HoursClock(BaseClock):
 
@@ -46,7 +47,7 @@ class MinutesClock(BaseClock):
         super(MinutesClock, self).__init__(canvas)
         self.initMinutes()
         self.minutes = 0
-        self.bind("<<changed>>", self.changed)
+        self.bind("<<Changed>>", self.changed)
 
     def initMinutes(self):
         self.setNumberList(min=0, max=59, start=-15, step=5, replace_step=True)

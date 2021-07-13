@@ -93,7 +93,6 @@ class BaseClock:
         else:
             raise ValueError("Enter value either through min, max or provide a list")
 
-
         if self._options["defaultPointer"] in self.numberlst:
             self.current_index = self._options["defaultPointer"]
 
@@ -119,8 +118,8 @@ class BaseClock:
 
                 _angle = angle * index
 
-                y = centerY + radius * math.sin(_angle)
-                x = centerX + radius * math.cos(_angle)
+                y = centerY + radius * math.sin(_angle) - 5
+                x = centerX + radius * math.cos(_angle) - 2
 
                 if index % self.step != 0 and self.replaceStep:
                     self._canvas.coords(obj, x - self._options["alttextwidth"],

@@ -48,13 +48,19 @@ class SpinTimePickerOld(_SpinBaseClass):
         self.period_var.trace("w", self.validatePeriod)
 
         self._12HrsTime = tkinter.Spinbox(self, increment=1, from_=1, to=12,
-                                          validate="all", validatecommand=(reg12hrs, "%P"))
+                                          validate="all", validatecommand=(reg12hrs, "%P"),
+                                          command=lambda a: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
+
         self._24HrsTime = tkinter.Spinbox(self, increment=1, from_=0, to=24,
-                                          validate="all", validatecommand=(reg24hrs, "%P"))
+                                          validate="all", validatecommand=(reg24hrs, "%P"),
+                                          command=lambda a: self._24HrsTime.event_generate("<<Changed24Hrs>>"))
+
         self._minutes = tkinter.Spinbox(self, increment=1, from_=0, to=59,
-                                        validate="all", validatecommand=(regMin, "%P"))
+                                        validate="all", validatecommand=(regMin, "%P"),
+                                        command=lambda a: self._minutes.event_generate("<<ChangedMins>>"))
 
         self._period = ttk.Combobox(self, values=["a.m", "p.m"], textvariable=self.period_var)
+        self._period.bind("<<ComboboxSelected>>", lambda a: self._minutes.event_generate("<<ChangedPeriod>>"))
 
     def hours12(self):
         self._12HrsTime.pack(expand=True, fill='both', side=self.orient)
@@ -76,6 +82,20 @@ class SpinTimePickerOld(_SpinBaseClass):
 
     def validateMinutes(self, value):
         return value.isdigit() and (0 <= int(value) <= 59) or value == ""
+
+    def pack_all(self, hours: int):
+
+        if hours == HOURS12:
+            self.hours12()
+
+        elif hours == HOURS24:
+            self.hours24()
+
+        else:
+            raise ValueError(f"Unknown type '{hours}'. Use either 0/1")
+
+        self.minutes()
+        self.period()
 
     def validatePeriod(self, *value):
 
@@ -107,9 +127,19 @@ class SpinTimePickerModern(_SpinBaseClass):
         self.period_var.trace("w", self.validatePeriod)
 
         self._12HrsTime = SpinLabel(master=self, min=1, max=12)
+        self._12HrsTime.bind("<<valueChanged>>", lambda a: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
+        self._12HrsTime.bind("<Button-1>", lambda a: self.event_generate("<<Hrs12Clicked>>"))
+
         self._24HrsTime = SpinLabel(master=self, min=0, max=24)
+        self._24HrsTime.bind("<<valueChanged>>", lambda a: self._12HrsTime.event_generate("<<Changed24Hrs>>"))
+        self._24HrsTime.bind("<Button-1>", lambda a: self.event_generate("<<Hrs24Clicked>>"))
+
         self._minutes = SpinLabel(master=self, min=0, max=59)
+        self._minutes.bind("<<valueChanged>>", lambda a: self._minutes.event_generate("<<ChangedMins>>"))
+        self._minutes.bind("<Button-1>", lambda a: self.event_generate("<<MinClicked>>"))
+
         self._period = ttk.Combobox(self, values=["a.m", "p.m"], textvariable=self.period_var)
+        self._period.bind("<<ComboboxSelected>>", lambda a: self._minutes.event_generate("<<ChangedPeriod>>"))
 
     def hours12(self):
         self._12HrsTime.pack(expand=True, fill='both', side=self.orient)
@@ -122,6 +152,20 @@ class SpinTimePickerModern(_SpinBaseClass):
 
     def period(self):
         self._period.pack(expand=True, fill='both', side='left')
+
+    def pack_all(self, hours):
+
+        if hours == HOURS12:
+            self.hours12()
+
+        elif hours == HOURS24:
+            self.hours24()
+
+        else:
+            raise ValueError(f"Unknown type '{hours}'. Use either 0/1")
+
+        self.minutes()
+        self.period()
 
     def validatePeriod(self, *value):
 
@@ -140,6 +184,15 @@ class SpinTimePickerModern(_SpinBaseClass):
             self.period_var.set("")
 
         self._period.icursor("end")
+
+    def set12Hrs(self, val: int):
+        self._12HrsTime.setValue(val)
+
+    def set24Hrs(self, val: int):
+        self._24HrsTime.setValue(val)
+
+    def setMins(self, val: int):
+        self._minutes.setValue(val)
 
 
 class SpinLabel(tkinter.Label):
@@ -168,8 +221,19 @@ class SpinLabel(tkinter.Label):
         self.bind("<Enter>", lambda event: self.focus_set())
         self.bind("<KeyRelease>", self.keyPress)
 
+    def setValue(self, val):
+        val = int(val)
+        if val in self.number_lst:
+            self.current_val = val
+            self.updateLabel()
+
     def updateLabel(self):
+        print("UPDATED: ", self.current_val)
         self["text"] = f"{self.current_val}"
+        self.event_generate("<<valueChanged>>")
+
+    def value(self) -> int:
+        return int(self.current_val)
 
     def emptyPreviousKey(self):
         self.previous_key = []
