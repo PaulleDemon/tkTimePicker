@@ -46,8 +46,9 @@ class BaseClock:
         self.replaceStep: bool = True
         self._current_id = ""
 
-        self._canvas.tag_bind("tkclocktext", "<Button-1>", self.movehand)
+        # self._canvas.tag_bind("tkclocktext", "<Button-1>", self.movehand)
         self._canvas.bind("<B1-Motion>", self.movehand)
+        self._canvas.bind("<Button-1>", self.movehand)
         self._canvas.bind("<Configure>", self.updateClockRect)
 
     def initClockText(self):  # adds texts to the clock
