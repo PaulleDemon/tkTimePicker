@@ -21,7 +21,10 @@ class BaseClock:
             "handcolor": "#000000",
             "capstyle": "round",
             "headsize": 10,
-            "headcolor": "#000000"
+            "headcolor": "#000000",
+            "headbdwidth": 0,
+            "headbdcolor": "#000000",
+            "clickedcolor": "#000000"
         }
 
         if set(kwargs) - set(self._options):
@@ -39,7 +42,10 @@ class BaseClock:
                                                   width=self._options["handthickness"],
                                                   capstyle=self._options["capstyle"], tag="tkclockhand")
 
-        self.hand_end = self._canvas.create_oval(0, 0, 0, 0, fill=self._options["headcolor"], tag="tkclockhand")
+        self.hand_end = self._canvas.create_oval(0, 0, 0, 0, fill=self._options["headcolor"],
+                                                 width=self._options["headbdwidth"],
+                                                 outline=self._options["headbdcolor"],
+                                                 tag="tkclockhand")
 
         self.start = 0
         self.step = 1
@@ -57,7 +63,7 @@ class BaseClock:
 
         for index, char in enumerate(self.numberlst, start=self.start):
             if index % self.step != 0 and self.replaceStep:
-                obj = self._canvas.create_oval(0, 0, 5, 5, width=1, tags="tkclocktext", fill=self._options["textcolor"])
+                obj = self._canvas.create_oval(0, 0, 5, 5, width=0, tags="tkclocktext", fill=self._options["textcolor"])
 
             else:
                 obj = self._canvas.create_text(0, 0, text=f"{char}", tags="tkclocktext",
@@ -65,9 +71,10 @@ class BaseClock:
 
             if self.current_index == char:
                 self._current_id = obj
+                self._canvas.itemconfig(self._current_id, fill=self._options["clickedcolor"])
 
-    def setNumberList(self, numberlst: list=None, min: int = None, max: int = None,
-                         start: int=None, step=None, replace_step: bool = None):
+    def setNumberList(self, numberlst: list = None, min: int = None, max: int = None,
+                      start: int = None, step=None, replace_step: bool = None):
 
         if step:
             self.step = step if step > 0 else 1
@@ -80,7 +87,6 @@ class BaseClock:
 
         if min is not None and max is not None:
             if self.step and not self.replaceStep:
-                print("YES")
                 self.numberlst = range(min, max + 1, step)
 
             else:
@@ -104,14 +110,15 @@ class BaseClock:
         width, height = event.width, event.height
         size = width if width < height else height
 
-        if self._options["min_size"] < size < self._options["max_size"]:  # doesn't shrink or expand is the size is not b/w min and max size
+        if self._options["min_size"] < size < self._options[
+            "max_size"]:  # doesn't shrink or expand is the size is not b/w min and max size
             centerX, centerY = width / 2, height / 2
             size -= float(self._canvas.itemcget(self.clock, "width")) + 10
 
             self._canvas.coords(self.clock, x, y, size, size)
             self._canvas.moveto(self.clock, centerX - size / 2, centerY - size / 2)
 
-            angle = math.pi*2 / len(self.numberlst)
+            angle = math.pi * 2 / len(self.numberlst)
             radius = size / 2 - self._options["textoffset"]
 
             for index, obj in enumerate(self._canvas.find_withtag("tkclocktext"), start=self.start):
@@ -155,7 +162,12 @@ class BaseClock:
                                 width=self._options["handthickness"],
                                 capstyle=self._options["capstyle"])
 
-        self._canvas.itemconfig(self.hand_line, fill=self._options["headcolor"])
+        self._canvas.itemconfig(self.hand_end, fill=self._options["headcolor"],
+                                width=self._options["headbdwidth"],
+                                outline=self._options["headbdcolor"],
+                                tag="tkclockhand")
+
+        self._canvas.itemconfig(self._current_id, fill=self._options["clickedcolor"])
 
     def current(self):
         return self.current_index
@@ -165,7 +177,9 @@ class BaseClock:
         _current_id = self._canvas.find_closest(event.x, event.y)[0]
 
         if _current_id in self._canvas.find_withtag("tkclocktext"):
+            self._canvas.itemconfig(self._current_id, fill=self._options["textcolor"])
             self._current_id = _current_id
+            self._canvas.itemconfig(self._current_id, fill=self._options["clickedcolor"])
             self.updateHand()
             self._canvas.event_generate("<<Changed>>")
 
@@ -173,7 +187,7 @@ class BaseClock:
 
         item_bbox = self._canvas.bbox(self._current_id)
 
-        centerX, centerY = self._canvas.winfo_width() / 2, self._canvas.winfo_height() / 2
+        centerX, centerY = self._canvas.winfo_width() / 2 - 2, self._canvas.winfo_height() / 2 - 5
 
         itemCX, itemCY = (item_bbox[2] + item_bbox[0]) / 2, (item_bbox[3] + item_bbox[1]) / 2
 

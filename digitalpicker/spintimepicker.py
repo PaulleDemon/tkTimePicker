@@ -17,6 +17,7 @@ class _SpinBaseClass(tkinter.Frame):
 
         self._12HrsTime: Union[tkinter.Spinbox, SpinLabel]
         self._24HrsTime: Union[tkinter.Spinbox, SpinLabel]
+        self._seperator = tkinter.Label(self, text=":")
         self._minutes: Union[tkinter.Spinbox, SpinLabel]
         self._period: ttk.Combobox
 
@@ -27,10 +28,13 @@ class _SpinBaseClass(tkinter.Frame):
         self._24HrsTime.configure(**kwargs)
 
     def configure_minute(self, **kwargs):
-        self.minutes.configure(**kwargs)
+        self._minutes.configure(**kwargs)
 
     def configure_period(self, **kwargs):
         self._period.configure(**kwargs)
+
+    def configure_seprator(self, **kwargs):
+        self._seperator.configure(**kwargs)
 
 
 class SpinTimePickerOld(_SpinBaseClass):
@@ -83,7 +87,7 @@ class SpinTimePickerOld(_SpinBaseClass):
     def validateMinutes(self, value):
         return value.isdigit() and (0 <= int(value) <= 59) or value == ""
 
-    def pack_all(self, hours: int):
+    def pack_all(self, hours: int, seperator: bool = True):
 
         if hours == HOURS12:
             self.hours12()
@@ -93,6 +97,9 @@ class SpinTimePickerOld(_SpinBaseClass):
 
         else:
             raise ValueError(f"Unknown type '{hours}'. Use either 0/1")
+
+        if seperator:
+            self._seperator.pack(expand=True, fill='both', side=self.orient)
 
         self.minutes()
         self.period()
@@ -153,7 +160,7 @@ class SpinTimePickerModern(_SpinBaseClass):
     def period(self):
         self._period.pack(expand=True, fill='both', side='left')
 
-    def pack_all(self, hours):
+    def pack_all(self, hours, seperator: bool = True):
 
         if hours == HOURS12:
             self.hours12()
@@ -163,6 +170,9 @@ class SpinTimePickerModern(_SpinBaseClass):
 
         else:
             raise ValueError(f"Unknown type '{hours}'. Use either 0/1")
+
+        if seperator:
+            self._seperator.pack(expand=True, fill='both', side=self.orient)
 
         self.minutes()
         self.period()
@@ -194,18 +204,27 @@ class SpinTimePickerModern(_SpinBaseClass):
     def setMins(self, val: int):
         self._minutes.setValue(val)
 
+    # def config
+
 
 class SpinLabel(tkinter.Label):
 
     def __init__(self, min=None, max=None, number_lst: list = None, start_val: int = None, *args, **kwargs):
         super(SpinLabel, self).__init__(*args, **kwargs)
 
+        self._option = {
+            "hovercolor": "#000000",
+            "hoverbg": "#ffffff",
+        }
+
+        self.default_fg = self.cget("fg")
+        self.default_bg = self.cget("bg")
+
         if min is not None and max is not None:
             self.number_lst = range(min, max + 1)
 
         else:
             self.number_lst = number_lst
-        print(self.number_lst)
 
         if start_val is not None and start_val in self.number_lst:
             self.current_val = start_val
@@ -218,8 +237,42 @@ class SpinLabel(tkinter.Label):
         self.previous_key = [self.current_val]
 
         self.bind("<MouseWheel>", self.wheelEvent)
-        self.bind("<Enter>", lambda event: self.focus_set())
+        self.bind("<Enter>", self.enter)
         self.bind("<KeyRelease>", self.keyPress)
+
+        self.bind("<Leave>", self.resetColor)
+        # self.bind("<FocusOut>", self.resetColor)
+
+    def enter(self, event):
+        self.default_fg = self.cget("fg")
+        self.default_bg = self.cget("bg")
+
+        self["fg"] = self._option["hovercolor"]
+        self["bg"] = self._option["hoverbg"]
+
+    def clicked(self, event):
+        # self.default_fg = self.cget("fg")
+        # self.default_bg = self.cget("bg")
+
+        self["fg"] = self._option["clickedcolor"]
+        self["bg"] = self._option["clickedbg"]
+
+    def resetColor(self, event=None):
+        self["fg"] = self.default_fg
+        self["bg"] = self.default_bg
+
+    def configure(self, cnf=None, **kw):
+        remove_lst = list()
+        for key, value in kw.copy().items():
+            if key in self._option.keys():
+                self._option[key] = value
+                remove_lst.append(key)
+
+        for x in remove_lst:
+            kw.pop(x)
+
+        super(SpinLabel, self).configure(cnf, **kw)
+
 
     def setValue(self, val):
         val = int(val)
@@ -228,7 +281,6 @@ class SpinLabel(tkinter.Label):
             self.updateLabel()
 
     def updateLabel(self):
-        print("UPDATED: ", self.current_val)
         self["text"] = f"{self.current_val}"
         self.event_generate("<<valueChanged>>")
 
