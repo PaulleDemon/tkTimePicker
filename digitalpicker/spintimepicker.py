@@ -1,13 +1,14 @@
-import re
 import tkinter
-from tkinter import ttk
+from .spinlabel import SpinLabel, LabelGroup, PeriodLabel
 from typing import Union
+
 
 HOURS12 = 0
 HOURS24 = 1
 
 VERTICAL = 0
 HORIZONTAL = 1
+
 
 class _SpinBaseClass(tkinter.Frame):
 
@@ -18,7 +19,7 @@ class _SpinBaseClass(tkinter.Frame):
         self._24HrsTime: Union[tkinter.Spinbox, SpinLabel]
         self._seperator = tkinter.Label(self, text=":")
         self._minutes: Union[tkinter.Spinbox, SpinLabel]
-        self._period: ttk.Combobox
+        self._period: PeriodLabel
 
     def configure_12HrsTime(self, **kwargs):
         self._12HrsTime.configure(**kwargs)
@@ -30,7 +31,7 @@ class _SpinBaseClass(tkinter.Frame):
         self._minutes.configure(**kwargs)
 
     def configure_period(self, **kwargs):
-        self._period.configure(**kwargs)
+        self._period.configPeriod(**kwargs)
 
     def configure_seprator(self, **kwargs):
         self._seperator.configure(**kwargs)
@@ -38,7 +39,7 @@ class _SpinBaseClass(tkinter.Frame):
 
 class SpinTimePickerOld(_SpinBaseClass):
 
-    def __init__(self, parent, orient=HORIZONTAL):
+    def __init__(self, parent, orient=HORIZONTAL, period_orient=VERTICAL):
         super(SpinTimePickerOld, self).__init__(parent)
 
         self.orient = "top" if orient == VERTICAL else "left"
@@ -62,8 +63,7 @@ class SpinTimePickerOld(_SpinBaseClass):
                                         validate="all", validatecommand=(regMin, "%P"),
                                         command=lambda a: self._minutes.event_generate("<<ChangedMins>>"))
 
-        self._period = ttk.Combobox(self, values=["a.m", "p.m"], textvariable=self.period_var)
-        self._period.bind("<<ComboboxSelected>>", lambda a: self._minutes.event_generate("<<ChangedPeriod>>"))
+        self._period = PeriodLabel(self, period_orient)
 
     def hours12(self):
         self._12HrsTime.pack(expand=True, fill='both', side=self.orient)
@@ -103,186 +103,14 @@ class SpinTimePickerOld(_SpinBaseClass):
         self.minutes()
         self.period()
 
-    def validatePeriod(self, *value):
-
-        period_value = self.period_var.get()
-
-        if period_value.lower() == "a":
-            self.period_var.set("a.m")
-
-        elif period_value.lower() == "p":
-            self.period_var.set("p.m")
-
-        elif period_value in ["a.m", "p.m"]:
-            pass
-
-        else:
-            self.period_var.set("")
-
-        self._period.icursor("end")
-
-
-class SpinLabel(tkinter.Label):
-
-    def __init__(self, min=None, max=None, number_lst: list = None, start_val: int = None, *args, **kwargs):
-        super(SpinLabel, self).__init__(*args, **kwargs)
-
-        self._option = {
-            "hovercolor": "#000000",
-            "hoverbg": "#ffffff",
-            "clickedcolor": "#000000",
-            "clickedbg": "#ffffff"
-        }
-
-        self.default_fg = self.cget("fg")
-        self.default_bg = self.cget("bg")
-
-        if min is not None and max is not None:
-            self.number_lst = range(min, max + 1)
-
-        else:
-            self.number_lst = number_lst
-
-        if start_val is not None and start_val in self.number_lst:
-            self.current_val = start_val
-
-        else:
-            self.current_val = self.number_lst[-1]
-
-        self.updateLabel()
-
-        self.previous_key = [self.current_val]
-
-        self._clicked = False
-
-        self.bind("<MouseWheel>", self.wheelEvent)
-        self.bind("<Enter>", self.enter)
-        self.bind("<KeyRelease>", self.keyPress)
-
-        self.bind("<Leave>", self.leave)
-        # self.bind("<FocusOut>", self.resetColor)
-
-    def enter(self, event):
-        if not self._clicked:
-            self.default_fg = self.cget("fg")
-            self.default_bg = self.cget("bg")
-
-            self["fg"] = self._option["hovercolor"]
-            self["bg"] = self._option["hoverbg"]
-
-    def leave(self, event):
-        if not self._clicked:
-            self.resetColor()
-
-    def clicked(self, event=None):
-        self._clicked = True
-        self["fg"] = self._option["clickedcolor"]
-        self["bg"] = self._option["clickedbg"]
-
-    def resetColor(self, event=None):
-        self._clicked = False
-        self["fg"] = self.default_fg
-        self["bg"] = self.default_bg
-
-    def configure(self, cnf=None, **kw):
-        remove_lst = list()
-        for key, value in kw.copy().items():
-            if key in self._option.keys():
-                self._option[key] = value
-                remove_lst.append(key)
-
-        for x in remove_lst:
-            kw.pop(x)
-
-        super(SpinLabel, self).configure(cnf, **kw)
-
-    def setValue(self, val):
-        val = int(val)
-        if val in self.number_lst:
-            self.current_val = val
-            self.updateLabel()
-
-    def updateLabel(self):
-        self["text"] = f"{self.current_val}"
-        self.event_generate("<<valueChanged>>")
-
-    def value(self) -> int:
-        return int(self.current_val)
-
-    def emptyPreviousKey(self):
-        self.previous_key = []
-
-    def delayedKey(self, key):
-        if len(self.previous_key) >= len(str(self.number_lst[-1])):
-            self.previous_key.pop(0)
-
-        self.previous_key.append(key)
-
-        number = int(''.join(map(str, self.previous_key)))
-
-        if number in self.number_lst:
-            self.current_val = number
-
-        self.updateLabel()
-
-        self.after(1000, self.emptyPreviousKey)
-
-    def wheelEvent(self, event: tkinter.Event):
-
-        if event.delta > 0:
-
-            if self.current_val < self.number_lst[-1]:
-                self.current_val += 1
-
-        else:
-            if self.current_val > self.number_lst[0]:
-                self.current_val -= 1
-
-        self.updateLabel()
-
-    def keyPress(self, event):
-
-        try:
-            number = int(event.char)
-            self.delayedKey(number)
-
-        except ValueError:
-            pass
-
-
-class SpinLblGroup:
-
-    def __init__(self):
-        self.group = set()
-        self.current = None
-
-    def add(self, item: SpinLabel):
-        item.bind("<Button-1>", self.setCurrent, add="+")
-        self.group.add(item)
-
-    def defaultItem(self, item: SpinLabel):
-        item.event_generate("<Button-1>")
-
-    def remove(self, item: SpinLabel):
-        self.group.remove(item)
-
-    def setCurrent(self, event):
-        if self.current:
-            self.current.resetColor()
-
-        self.current = event.widget
-        self.current.clicked()
-
 
 class SpinTimePickerModern(_SpinBaseClass):
 
     def __init__(self, parent, orient=HORIZONTAL):
         super(SpinTimePickerModern, self).__init__(parent)
 
+        self.hour_type = HOURS12
         self.orient = "top" if orient == VERTICAL else "left"
-
-        self.period_var = tkinter.StringVar(self, value="a.m")
-        self.period_var.trace("w", self.validatePeriod)
 
         self._12HrsTime = SpinLabel(master=self, min=1, max=12)
         self._12HrsTime.bind("<<valueChanged>>", lambda a: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
@@ -296,10 +124,9 @@ class SpinTimePickerModern(_SpinBaseClass):
         self._minutes.bind("<<valueChanged>>", lambda a: self._minutes.event_generate("<<ChangedMins>>"))
         self._minutes.bind("<Button-1>", lambda a: self.event_generate("<<MinClicked>>"))
 
-        # self._period = ttk.Combobox(self, values=["a.m", "p.m"], textvariable=self.period_var)
-        # self._period.bind("<<ComboboxSelected>>", lambda a: self._minutes.event_generate("<<ChangedPeriod>>"))
+        self._period = PeriodLabel(master=self)
 
-        self.spinlblGroup = SpinLblGroup()
+        self.spinlblGroup = LabelGroup()
 
     def addHours12(self):
         self._12HrsTime.pack(expand=True, fill='both', side=self.orient)
@@ -318,6 +145,8 @@ class SpinTimePickerModern(_SpinBaseClass):
 
     def pack_all(self, hours, seperator: bool = True):
 
+        self.hour_type = hours
+
         if hours == HOURS12:
             self.addHours12()
 
@@ -335,24 +164,6 @@ class SpinTimePickerModern(_SpinBaseClass):
 
         self.spinlblGroup.defaultItem(self._12HrsTime if hours == HOURS12 else self._24HrsTime)
 
-    def validatePeriod(self, *value):
-
-        period_value = self.period_var.get()
-
-        if period_value.lower() == "a":
-            self.period_var.set("a.m")
-
-        elif period_value.lower() == "p":
-            self.period_var.set("p.m")
-
-        elif period_value in ["a.m", "p.m"]:
-            pass
-
-        else:
-            self.period_var.set("")
-
-        self._period.icursor("end")
-
     def set12Hrs(self, val: int):
         self._12HrsTime.setValue(val)
 
@@ -362,8 +173,9 @@ class SpinTimePickerModern(_SpinBaseClass):
     def setMins(self, val: int):
         self._minutes.setValue(val)
 
-    # def config
-
+    def configure_12HrsTime(self, **kwargs):
+        super(SpinTimePickerModern, self).configure_12HrsTime(**kwargs)
+        self.spinlblGroup.defaultItem(self._12HrsTime if self.hour_type == HOURS12 else self._24HrsTime)
 
 
 if __name__ == "__main__":

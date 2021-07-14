@@ -74,6 +74,7 @@ class AnalogPicker(tkinter.Frame):
         self.spinPicker.configure_12HrsTime(**kwargs)
         self.spinPicker.configure_24HrsTime(**kwargs)
         self.spinPicker.configure_minute(**kwargs)
+        self.spinPicker.configure_period(**kwargs)
 
         for x in ("hovercolor", "hoverbg", "clickedcolor", "clickedbg"):
             if x in kwargs:
@@ -117,28 +118,28 @@ class Themes:
                                  clickedcolor="#ffffff", textcolor="#000000", canvas_bg="#ffffff",
                                  alttextwidth=2, bdwidth=0)
 
-        time_picker.configSpin(bg="#009688", height=2, fg="#ffffff", font=("Times", 18), hoverbg="#00695f",
+        time_picker.configSpin(bg="#009688", height=2, fg="#ffffff", font=("Times", 16), hoverbg="#00695f",
                                hovercolor="#b6cbd1", clickedbg="#00695f", clickedcolor="#ffffff")
 
-        time_picker.configSeperator(font=("Times", 20, "bold"), width=1)
-        time_picker.configurePeriod(bg='blue')
+        time_picker.configSeperator(font=("Times", 18, "bold"), width=1)
 
     def setDrakula(self):
         time_picker.configAnalog(headcolor="#863434", handcolor="#863434", bg="#363636",
                                  clickedcolor="#ffffff", textcolor="#ffffff", canvas_bg="#404040",
                                  alttextwidth=2, bdwidth=0)
 
-        time_picker.configSpin(bg="#404040", height=2, fg="#ffffff", font=("Times", 18), hoverbg="#404040",
+        time_picker.configSpin(bg="#404040", height=2, fg="#ffffff", font=("Times", 16), hoverbg="#404040",
                                hovercolor="#d73333", clickedbg="#2e2d2d", clickedcolor="#d73333")
 
-        time_picker.configSeperator(font=("Times", 20, "bold"), width=1)
+        time_picker.configSeperator(font=("Times", 18, "bold"), width=1)
 
     def setPurple(self):
         time_picker.configAnalog(headcolor="#ee333d", handcolor="#ee333d", bg="#71135c",
                                  clickedcolor="#ffffff", textcolor="#ffffff", canvas_bg="#4e0d3a",
                                  alttextwidth=2, bdwidth=0)
 
-        time_picker.configSpin(bg="#71135c", height=2, fg="#ffffff", font=("Times", 18), activeforeground="#ee333d")
+        time_picker.configSpin(bg="#71135c", height=2, fg="#ffffff", font=("Times", 18), hoverbg="#3d0430",
+                               hovercolor="#ffffff", clickedbg="#ad118c", clickedcolor="#ffffff")
         time_picker.configSeperator(font=("Times", 20, "bold"), width=1)
 
 
