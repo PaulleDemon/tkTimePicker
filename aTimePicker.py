@@ -117,8 +117,11 @@ class Themes:
                                  clickedcolor="#ffffff", textcolor="#000000", canvas_bg="#ffffff",
                                  alttextwidth=2, bdwidth=0)
 
-        time_picker.configSpin(bg="#009688", height=2, fg="#ffffff", font=("Times", 18))
+        time_picker.configSpin(bg="#009688", height=2, fg="#ffffff", font=("Times", 18), hoverbg="#00695f",
+                               hovercolor="#b6cbd1", clickedbg="#00695f", clickedcolor="#ffffff")
+
         time_picker.configSeperator(font=("Times", 20, "bold"), width=1)
+        time_picker.configurePeriod(bg='blue')
 
     def setDrakula(self):
         time_picker.configAnalog(headcolor="#863434", handcolor="#863434", bg="#363636",
@@ -126,7 +129,7 @@ class Themes:
                                  alttextwidth=2, bdwidth=0)
 
         time_picker.configSpin(bg="#404040", height=2, fg="#ffffff", font=("Times", 18), hoverbg="#404040",
-                               hovercolor="#d73333")
+                               hovercolor="#d73333", clickedbg="#2e2d2d", clickedcolor="#d73333")
 
         time_picker.configSeperator(font=("Times", 20, "bold"), width=1)
 
@@ -146,8 +149,8 @@ if __name__ == "__main__":
     time_picker.pack(expand=1, fill='both')
 
     theme = Themes(time_picker)
-    # theme.setNavyBlue()
-    theme.setDrakula()
+    theme.setNavyBlue()
+    # theme.setDrakula()
     # theme.setPurple()
     # time_picker.configAnalog(headcolor="#009688", handcolor="#009688", bg="#eeeeee",
     #                          clickedcolor="#ffffff", textcolor="#000000", canvas_bg="#ffffff", bdwidth=0)
