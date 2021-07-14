@@ -2,6 +2,7 @@ import tkinter
 import math
 
 
+# todo: remove moveto and apply coords
 class BaseClock:
 
     def __init__(self, canvas: tkinter.Canvas, **kwargs):
@@ -52,7 +53,6 @@ class BaseClock:
         self.replaceStep: bool = True
         self._current_id = ""
 
-        # self._canvas.tag_bind("tkclocktext", "<Button-1>", self.movehand)
         self._canvas.bind("<B1-Motion>", self.movehand)
         self._canvas.bind("<Button-1>", self.movehand)
         self._canvas.bind("<Configure>", self.updateClockRect)
@@ -110,8 +110,8 @@ class BaseClock:
         width, height = event.width, event.height
         size = width if width < height else height
 
-        if self._options["min_size"] < size < self._options[
-            "max_size"]:  # doesn't shrink or expand is the size is not b/w min and max size
+        if self._options["min_size"] < size < self._options["max_size"]:
+            # doesn't shrink or expand is the size is not b/w min and max size
             centerX, centerY = width / 2, height / 2
             size -= float(self._canvas.itemcget(self.clock, "width")) + 10
 
@@ -147,9 +147,9 @@ class BaseClock:
         self._options.update(kwargs)
 
         self._canvas.itemconfig(self.clock,
-                                fill=self._options['bg'],
-                                outline=self._options['bdColor'],
-                                width=self._options['bdwidth'])
+                                fill=self._options["bg"],
+                                outline=self._options["bdColor"],
+                                width=self._options["bdwidth"])
 
         for obj in self._canvas.find_withtag("tkclocktext"):
             try:
@@ -174,7 +174,7 @@ class BaseClock:
 
     def movehand(self, event: tkinter.Event):
 
-        _current_id = self._canvas.find_closest(event.x, event.y)[0]
+        _current_id = self._canvas.find_closest(event.x, event.y, halo=25)[0]
 
         if _current_id in self._canvas.find_withtag("tkclocktext"):
             self._canvas.itemconfig(self._current_id, fill=self._options["textcolor"])
@@ -193,10 +193,10 @@ class BaseClock:
 
         self._canvas.coords(self.hand_line, centerX, centerY, itemCX, itemCY)
 
-        self._canvas.coords(self.hand_end, itemCX - self._options['headsize'],
-                            itemCY - self._options['headsize'],
-                            itemCX + self._options['headsize'],
-                            itemCY + self._options['headsize'])
+        self._canvas.coords(self.hand_end, itemCX - self._options["headsize"],
+                            itemCY - self._options["headsize"],
+                            itemCX + self._options["headsize"],
+                            itemCY + self._options["headsize"])
 
         try:
             self.current_index = self._canvas.itemcget(self._current_id, "tkclocktext")
@@ -210,17 +210,3 @@ class BaseClock:
     def bind(self, seq, callback):
         self._canvas.bind(seq, callback)
 
-
-if __name__ == "__main__":
-    root = tkinter.Tk()
-
-    canvas1 = tkinter.Canvas(root)
-    canvas1['bg'] = 'white'
-    canvas1.pack(fill='both', expand=1)
-
-    clock = BaseClock(canvas1, bdwidth=10, textoffset=40)
-    clock.setNumberList(min=1, max=12, step=2)
-    clock.initClockText()
-    clock.configure(handthickness=7, textcolor="blue", textfont=("Times", 30, "bold"), alttextwidth=10)
-    # clock.bind("<<Changed>>", lambda a: print(clock.current()))
-    root.mainloop()

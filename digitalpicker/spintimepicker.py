@@ -1,6 +1,8 @@
 import tkinter
-from .spinlabel import SpinLabel, LabelGroup, PeriodLabel
+from tkinter import ttk
+
 from typing import Union
+from .spinlabel import SpinLabel, LabelGroup, PeriodLabel
 
 
 HOURS12 = 0
@@ -63,19 +65,20 @@ class SpinTimePickerOld(_SpinBaseClass):
                                         validate="all", validatecommand=(regMin, "%P"),
                                         command=lambda a: self._minutes.event_generate("<<ChangedMins>>"))
 
-        self._period = PeriodLabel(self, period_orient)
+        self._period = ttk.Combobox(self, values=["a.m", "p.m"], textvariable=self.period_var)
+        self._period.bind("<<ComboboxSelected>>", lambda a: self._minutes.event_generate("<<ChangedPeriod>>"))
 
     def hours12(self):
-        self._12HrsTime.pack(expand=True, fill='both', side=self.orient)
+            self._12HrsTime.pack(expand=True, fill="both", side=self.orient)
 
     def hours24(self):
-        self._24HrsTime.pack(expand=True, fill='both', side=self.orient)
+        self._24HrsTime.pack(expand=True, fill="both", side=self.orient)
 
     def minutes(self):
-        self._minutes.pack(expand=True, fill='both', side=self.orient)
+        self._minutes.pack(expand=True, fill="both", side=self.orient)
 
     def period(self):
-        self._period.pack(expand=True, fill='both', side='left')
+        self._period.pack(expand=True, fill="both", side=self.orient)
 
     def validate12hrs(self, value):
         return value.isdigit() and (0 <= int(value) <= 12) or value == ""
@@ -129,19 +132,19 @@ class SpinTimePickerModern(_SpinBaseClass):
         self.spinlblGroup = LabelGroup()
 
     def addHours12(self):
-        self._12HrsTime.pack(expand=True, fill='both', side=self.orient)
+        self._12HrsTime.pack(expand=True, fill="both", side=self.orient)
         self.spinlblGroup.add(self._12HrsTime)
 
     def addHours24(self):
-        self._24HrsTime.pack(expand=True, fill='both', side=self.orient)
+        self._24HrsTime.pack(expand=True, fill="both", side=self.orient)
         self.spinlblGroup.add(self._24HrsTime)
 
     def addMinutes(self):
-        self._minutes.pack(expand=True, fill='both', side=self.orient)
+        self._minutes.pack(expand=True, fill="both", side=self.orient)
         self.spinlblGroup.add(self._minutes)
 
     def addPeriod(self):
-        self._period.pack(expand=True, fill='both', side='left')
+        self._period.pack(expand=True, fill="both", side=self.orient)
 
     def pack_all(self, hours, seperator: bool = True):
 
@@ -177,21 +180,17 @@ class SpinTimePickerModern(_SpinBaseClass):
         super(SpinTimePickerModern, self).configure_12HrsTime(**kwargs)
         self.spinlblGroup.defaultItem(self._12HrsTime if self.hour_type == HOURS12 else self._24HrsTime)
 
+    def hours12(self):
+        return self._12HrsTime.value()
 
-if __name__ == "__main__":
-    root = tkinter.Tk()
+    def hours24(self):
+        return self._24HrsTime.value()
 
-    # time_picker = SpinTimePickerOld(root, orient=VERTICAL)
-    # time_picker.hours12()
-    # time_picker.configure_12HrsTime(bg='blue')
-    # time_picker.minutes()
-    # time_picker.period()
-    # time_picker.pack()
-    # lbl = SpinTimePickerModern(root)
-    # lbl.hours12()
-    # lbl.minutes()
-    # lbl.period()
-    # lbl.configure_12HrsTime(bg='red')
-    # lbl.pack()
+    def minutes(self):
+        return self._minutes.value()
 
-    root.mainloop()
+    def period(self):
+        return self._period.period()
+
+    def formattedTime(self):
+        pass # todo: here

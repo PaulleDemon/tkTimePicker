@@ -1,19 +1,18 @@
 import tkinter
-from .baseclock import BaseClock
 
-HOURS12 = 0
-HOURS24 = 1
+import constants
+from .baseclock import BaseClock
 
 
 class HoursClock(BaseClock):
 
-    def __init__(self, canvas: tkinter.Canvas, type: int = HOURS12):
+    def __init__(self, canvas: tkinter.Canvas, type: int = constants.HOURS12):
         super(HoursClock, self).__init__(canvas)
 
-        if type == HOURS12:
+        if type == constants.HOURS12:
             self.hours12()
 
-        elif type == HOURS24:
+        elif type == constants.HOURS24:
             self.hours24()
 
         else:
@@ -61,18 +60,3 @@ class MinutesClock(BaseClock):
     def getMinutes(self):
         return self.minutes
 
-
-
-if __name__ == "__main__":
-    root = tkinter.Tk()
-
-    canvas1 = tkinter.Canvas(root)
-    canvas1['bg'] = 'white'
-    canvas1.pack(fill='both', expand=1)
-
-    # clock = HoursClock(canvas1, type=HOURS24)
-    # clock.bind("<<Changed>>", lambda a: print(clock.current()))
-
-    clock2 = MinutesClock(canvas1)
-
-    root.mainloop()

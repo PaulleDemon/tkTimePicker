@@ -1,11 +1,6 @@
 import tkinter
 from typing import Union
-
-VERTICAL = 0
-HORIZONTAL = 1
-
-AM = "AM"
-PM = "PM"
+import constants
 
 
 class HoverClickLabel(tkinter.Label):
@@ -68,10 +63,10 @@ class HoverClickLabel(tkinter.Label):
 
 class PeriodLabel(tkinter.Frame):
 
-    def __init__(self, master=None, defaultperiod="AM", orient=VERTICAL):
+    def __init__(self, master=None, defaultperiod="AM", orient=constants.VERTICAL):
         super(PeriodLabel, self).__init__(master)
 
-        if defaultperiod in [AM, PM]:
+        if defaultperiod in [constants.AM, constants.PM]:
             self._current_period = defaultperiod
 
         else:
@@ -83,7 +78,7 @@ class PeriodLabel(tkinter.Frame):
         self._am.bind("<Button-1>", self.changePeriod)
         self._pm.bind("<Button-1>", self.changePeriod)
 
-        orient = "top" if orient == VERTICAL else "left"
+        orient = "top" if orient == constants.VERTICAL else "left"
 
         self._am.pack(expand=True, fill='both', side=orient)
         self._pm.pack(expand=True, fill='both', side=orient)
@@ -91,16 +86,15 @@ class PeriodLabel(tkinter.Frame):
         self.group = LabelGroup()
         self.group.add(self._am)
         self.group.add(self._pm)
-        self.group.defaultItem(self._am if defaultperiod == AM else self._pm)
+        self.group.defaultItem(self._am if defaultperiod == constants.AM else self._pm)
 
     def configPeriod(self, **kw):
         self._am.configure(**kw)
         self._pm.configure(**kw)
-        self.group.defaultItem(self._am if self._current_period == AM else self._pm)
+        self.group.defaultItem(self._am if self._current_period == constants.AM else self._pm)
 
     def changePeriod(self, event):
         self._current_period = event.widget.cget("text")
-        print(self._current_period)
 
     def period(self):
         return self._current_period

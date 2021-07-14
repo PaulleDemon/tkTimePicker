@@ -1,15 +1,15 @@
+import base64
 import tkinter
+import zlib
 
 from clock import clock
 from digitalpicker import spintimepicker
-
-HOURS12 = 0
-HOURS24 = 1
+import constants
 
 
 class AnalogPicker(tkinter.Frame):
 
-    def __init__(self, parent, type=HOURS12):
+    def __init__(self, parent, type=constants.HOURS12):
         super(AnalogPicker, self).__init__(parent)
         self.type = type
 
@@ -33,7 +33,7 @@ class AnalogPicker(tkinter.Frame):
 
         self.hrs_displayed = True
 
-        self.spinPicker.pack(expand=True, fill='both')
+        self.spinPicker.pack(expand=True, fill="both")
         self.displayHrs()
 
     def toggle(self, event=None):
@@ -44,11 +44,11 @@ class AnalogPicker(tkinter.Frame):
 
     def displayMin(self, event=None):
         self.hrs_canvas.pack_forget()
-        self.min_canvas.pack(expand=True, fill='both')
+        self.min_canvas.pack(expand=True, fill="both")
 
     def displayHrs(self, event=None):
         self.min_canvas.pack_forget()
-        self.hrs_canvas.pack(expand=True, fill='both')
+        self.hrs_canvas.pack(expand=True, fill="both")
 
     def setMinutes(self, event=None):
         self.spinPicker.setMins(self.minutes_picker.getMinutes())
@@ -56,7 +56,7 @@ class AnalogPicker(tkinter.Frame):
     def setHours(self, event=None):
         hrs = int(self.hours_picker.getHours())
 
-        if self.type == HOURS12:
+        if self.type == constants.HOURS12:
             self.spinPicker.set12Hrs(hrs)
 
         else:
@@ -123,7 +123,7 @@ class Themes:
 
         time_picker.configSeperator(font=("Times", 18, "bold"), width=1)
 
-    def setDrakula(self):
+    def setDracula(self):
         time_picker.configAnalog(headcolor="#863434", handcolor="#863434", bg="#363636",
                                  clickedcolor="#ffffff", textcolor="#ffffff", canvas_bg="#404040",
                                  alttextwidth=2, bdwidth=0)
@@ -138,26 +138,22 @@ class Themes:
                                  clickedcolor="#ffffff", textcolor="#ffffff", canvas_bg="#4e0d3a",
                                  alttextwidth=2, bdwidth=0)
 
-        time_picker.configSpin(bg="#71135c", height=2, fg="#ffffff", font=("Times", 18), hoverbg="#3d0430",
+        time_picker.configSpin(bg="#71135c", height=2, fg="#ffffff", font=("Times", 16), hoverbg="#3d0430",
                                hovercolor="#ffffff", clickedbg="#ad118c", clickedcolor="#ffffff")
-        time_picker.configSeperator(font=("Times", 20, "bold"), width=1)
+        time_picker.configSeperator(font=("Times", 18, "bold"), width=1)
 
 
 if __name__ == "__main__":
     root = tkinter.Tk()
+    root.title("tkTimePicker")
+    root.iconbitmap(default='transparent.ico')
 
     time_picker = AnalogPicker(root)
     time_picker.pack(expand=1, fill='both')
 
     theme = Themes(time_picker)
-    theme.setNavyBlue()
-    # theme.setDrakula()
+    # theme.setNavyBlue()
+    theme.setDracula()
     # theme.setPurple()
-    # time_picker.configAnalog(headcolor="#009688", handcolor="#009688", bg="#eeeeee",
-    #                          clickedcolor="#ffffff", textcolor="#000000", canvas_bg="#ffffff", bdwidth=0)
-    #
-    # time_picker.configSpin(bg="#009688", height=2, fg="#ffffff", font=("Times", 18))
-    # time_picker.configSeperator(font=("Times", 20, "bold"), width=1)
-
 
     root.mainloop()
