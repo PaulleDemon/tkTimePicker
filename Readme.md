@@ -1,12 +1,26 @@
 # tkTimePicker
 
-This is a simple timepicker widgets made for tkinter. You can make use of
+This is a simple and fully customizable timepicker widgets made for tkinter. You can make use of
 three types of timepicker:
 
 1. clock timepicker
 2. old-spin timepicker
 3. modern-spin timepicker
 
+quick example
+```python
+import tkinter as tk
+from timepicker import clockTimePicker
+
+root = tk.Tk()
+
+time_picker = clockTimePicker.AnalogPicker(root)
+time_picker.pack()
+
+root.mainloop()
+```
+
+for more examples refer
 
 **Clock time picker**
 

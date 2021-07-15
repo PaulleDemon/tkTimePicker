@@ -1,6 +1,6 @@
 import tkinter
 from typing import Union
-import constants
+from timepicker import constants
 
 
 class HoverClickLabel(tkinter.Label):
@@ -163,7 +163,7 @@ class SpinLabel(HoverClickLabel):
 
         if event.delta > 0:
 
-            if self._current_index < len(self.number_lst):
+            if self._current_index < len(self.number_lst)-1:
                 self._current_index += 1
 
             else:

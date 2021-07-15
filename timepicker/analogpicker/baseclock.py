@@ -4,7 +4,8 @@ import math
 
 class BaseClock:
 
-    def __init__(self, canvas: tkinter.Canvas, **kwargs):
+    def __init__(self, canvas: tkinter.Canvas, min: int = None, max: int = None, numberlst: list = None,
+                      start: int = None, step=None, replace_step: bool = None, **kwargs):
 
         self._options = {
             "min_size": 200,
@@ -24,7 +25,8 @@ class BaseClock:
             "headcolor": "#000000",
             "headbdwidth": 0,
             "headbdcolor": "#000000",
-            "clickedcolor": "#c4c4c4"
+            "clickedcolor": "#c4c4c4",
+            "halo": 5
         }
 
         if set(kwargs) - set(self._options):
@@ -52,11 +54,15 @@ class BaseClock:
         self.replaceStep: bool = True
         self._current_id = ""
 
+        if any([min, max, numberlst]):
+            self.setNumberList(min, max, numberlst, start, step, replace_step)
+            self.drawClockText()
+
         self._canvas.bind("<B1-Motion>", self.movehand)
         self._canvas.bind("<Button-1>", self.movehand)
         self._canvas.bind("<Configure>", self.updateClockRect)
 
-    def drawClockText(self):  # adds texts to the clock
+    def drawClockText(self):  # adds texts to the analogpicker
 
         self._canvas.delete("tkclocktext")
 
@@ -72,7 +78,7 @@ class BaseClock:
                 self._current_id = obj
                 self._canvas.itemconfig(self._current_id, fill=self._options["clickedcolor"])
 
-    def setNumberList(self, numberlst: list = None, min: int = None, max: int = None,
+    def setNumberList(self, min: int = None, max: int = None, numberlst: list = None,
                       start: int = None, step=None, replace_step: bool = None):
 
         if step is not None:
@@ -98,7 +104,7 @@ class BaseClock:
                     self.numberlst.pop(x)
 
         else:
-            raise ValueError("Enter value either through min, max or provide a list")
+            raise ValueError("Enter either min, max or provide a list")
 
         if self._options["defaultPointer"] in self.numberlst:
             self.current_index = self._options["defaultPointer"]
@@ -108,44 +114,51 @@ class BaseClock:
 
     def updateClockRect(self, event):  # updates the size of the circle and moves it to center
 
-        width, height = event.width, event.height
-        size = width if width < height else height
+        try:
+            width, height = event.width, event.height
+            size = width if width < height else height
 
-        if self._options["min_size"] < size < self._options["max_size"]:
-            # doesn't shrink or expand is the size is not b/w min and max size
-            centerX, centerY = width / 2, height / 2
-            size -= float(self._canvas.itemcget(self.clock, "width")) + 10
+            if self._options["min_size"] < size < self._options["max_size"]:
+                # doesn't shrink or expand is the size is not b/w min and max size
+                centerX, centerY = width / 2, height / 2
+                size -= float(self._canvas.itemcget(self.clock, "width")) + 10
 
-            # Since some versions of tkinter doesn't contain `moveto` method we need to do
-            # some math to center the clock or tk.call('moveto')
-            clock_coords = self._canvas.coords(self.clock)
+                # Since some versions of tkinter doesn't contain `moveto` method we need to do
+                # some math to center the analogpicker or tk.call('moveto')
+                clock_coords = self._canvas.coords(self.clock)
 
-            x = clock_coords[0] + (centerX - size/2 - clock_coords[0])
-            y = clock_coords[1] + (centerY - size/2 - clock_coords[1])
+                x = clock_coords[0] + (centerX - size/2 - clock_coords[0])
+                y = clock_coords[1] + (centerY - size/2 - clock_coords[1])
 
-            self._canvas.coords(self.clock, x, y, size+x, size+y)
-            # self._canvas.moveto(self.clock, centerX - size / 2, centerY - size / 2)
+                self._canvas.coords(self.clock, x, y, size+x, size+y)
+                # self._canvas.moveto(self.analogpicker, centerX - size / 2, centerY - size / 2)
 
-            angle = math.pi * 2 / len(self.numberlst)
-            radius = size / 2 - self._options["textoffset"]
+                angle = math.pi * 2 / len(self.numberlst)
+                radius = size / 2 - self._options["textoffset"]
 
-            for index, obj in enumerate(self._canvas.find_withtag("tkclocktext"), start=self.start):
+                for index, obj in enumerate(self._canvas.find_withtag("tkclocktext"), start=self.start):
 
-                _angle = angle * index
+                    _angle = angle * index
 
-                y = centerY + radius * math.sin(_angle)
-                x = centerX + radius * math.cos(_angle)
+                    y = centerY + radius * math.sin(_angle)
+                    x = centerX + radius * math.cos(_angle)
 
-                if index % self.step != 0 and self.replaceStep:
-                    self._canvas.coords(obj, x - self._options["alttextwidth"],
-                                        y - self._options["alttextwidth"],
-                                        x + self._options["alttextwidth"],
-                                        y + self._options["alttextwidth"])
-                    continue
+                    if index % self.step != 0 and self.replaceStep:
+                        self._canvas.coords(obj, x - self._options["alttextwidth"],
+                                            y - self._options["alttextwidth"],
+                                            x + self._options["alttextwidth"],
+                                            y + self._options["alttextwidth"])
+                        continue
 
-                self._canvas.coords(obj, x, y)
+                    self._canvas.coords(obj, x, y)
 
-            self.updateHand()
+                self.updateHand()
+
+        except AttributeError:
+            raise NameError("`setNumberList` method must be called to initialize the list")
+
+        except TypeError:
+            raise NameError("Need to call `drawClockText` method")
 
     def configure(self, **kwargs):  # background, border-color, border-width
 
@@ -182,7 +195,7 @@ class BaseClock:
 
     def movehand(self, event: tkinter.Event):
 
-        _current_id = self._canvas.find_closest(event.x, event.y, halo=5)[0]
+        _current_id = self._canvas.find_closest(event.x, event.y, halo=self._options["halo"])[0]
 
         if _current_id in self._canvas.find_withtag("tkclocktext"):
             self._canvas.itemconfig(self._current_id, fill=self._options["textcolor"])
@@ -226,9 +239,9 @@ if __name__ == "__main__":
 
     canvas = tkinter.Canvas(root)
 
-    time_picker = BaseClock(canvas)
-    time_picker.setNumberList(numberlst=["A", "B", "C", "D"], step=2, replace_step=False)
-    time_picker.drawClockText()
+    time_picker = BaseClock(canvas, 1, 12, start=-2)
+    # time_picker.setNumberList(numberlst=["A", "B", "C", "D"], step=2, replace_step=False)
+    # time_picker.drawClockText()
     time_picker.bind("<<Changed>>", lambda a: print(time_picker.current()))
     canvas.pack(expand=1, fill='both')
 

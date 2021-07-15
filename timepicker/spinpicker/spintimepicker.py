@@ -3,15 +3,8 @@ from tkinter import ttk
 
 from typing import Union
 
-import constants
-from digitalpicker.spinlabel import SpinLabel, LabelGroup, PeriodLabel
-
-
-HOURS12 = 0
-HOURS24 = 1
-
-VERTICAL = 0
-HORIZONTAL = 1
+from timepicker import constants
+from timepicker.spinpicker.spinlabel import SpinLabel, LabelGroup, PeriodLabel
 
 
 class _SpinBaseClass(tkinter.Frame):
@@ -35,18 +28,25 @@ class _SpinBaseClass(tkinter.Frame):
         self._minutes.configure(**kwargs)
 
     def configure_period(self, **kwargs):
-        self._period.configPeriod(**kwargs)
+        if isinstance(self._period, PeriodLabel):
+            self._period.configPeriod(**kwargs)
 
     def configure_seprator(self, **kwargs):
         self._seperator.configure(**kwargs)
 
+    def configureAll(self, **kw):
+        self.configure_12HrsTime(**kw)
+        self.configure_24HrsTime(**kw)
+        self.configure_minute(**kw)
+        self.configure_period(**kw)
+
 
 class SpinTimePickerOld(_SpinBaseClass):
 
-    def __init__(self, parent, orient=HORIZONTAL, period_orient=VERTICAL):
+    def __init__(self, parent, orient=constants.HORIZONTAL, period_orient=constants.VERTICAL):
         super(SpinTimePickerOld, self).__init__(parent)
 
-        self.orient = "top" if orient == VERTICAL else "left"
+        self.orient = "top" if orient == constants.VERTICAL else "left"
 
         reg12hrs = self.register(self.validate12hrs)
         reg24hrs = self.register(self.validate24hrs)
@@ -109,12 +109,12 @@ class SpinTimePickerOld(_SpinBaseClass):
 
         self._period.icursor("end")
 
-    def pack_all(self, hours: int, seperator: bool = True):
+    def addAll(self, hours: int, seperator: bool = True):
 
-        if hours == HOURS12:
+        if hours == constants.HOURS12:
             self.hours12()
 
-        elif hours == HOURS24:
+        elif hours == constants.HOURS24:
             self.hours24()
 
         else:
@@ -129,11 +129,11 @@ class SpinTimePickerOld(_SpinBaseClass):
 
 class SpinTimePickerModern(_SpinBaseClass):
 
-    def __init__(self, parent, orient=HORIZONTAL):
+    def __init__(self, parent, orient=constants.HORIZONTAL, per_orient=constants.VERTICAL, period=constants.AM):
         super(SpinTimePickerModern, self).__init__(parent)
 
-        self.hour_type = HOURS12
-        self.orient = "top" if orient == VERTICAL else "left"
+        self.hour_type = constants.HOURS12
+        self.orient = "top" if orient == constants.VERTICAL else "left"
 
         self._12HrsTime = SpinLabel(master=self, min=1, max=12)
         self._12HrsTime.bind("<<valueChanged>>", lambda a: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
@@ -147,7 +147,7 @@ class SpinTimePickerModern(_SpinBaseClass):
         self._minutes.bind("<<valueChanged>>", lambda a: self._minutes.event_generate("<<ChangedMins>>"))
         self._minutes.bind("<Button-1>", lambda a: self.event_generate("<<MinClicked>>"))
 
-        self._period = PeriodLabel(master=self)
+        self._period = PeriodLabel(self, period, per_orient)
 
         self.spinlblGroup = LabelGroup()
 
@@ -166,14 +166,14 @@ class SpinTimePickerModern(_SpinBaseClass):
     def addPeriod(self):
         self._period.pack(expand=True, fill="both", side=self.orient)
 
-    def pack_all(self, hours, seperator: bool = True):
+    def addAll(self, hours, seperator: bool = True):
 
         self.hour_type = hours
 
-        if hours == HOURS12:
+        if hours == constants.HOURS12:
             self.addHours12()
 
-        elif hours == HOURS24:
+        elif hours == constants.HOURS24:
             self.addHours24()
 
         else:
@@ -185,7 +185,7 @@ class SpinTimePickerModern(_SpinBaseClass):
         self.addMinutes()
         self.addPeriod()
 
-        self.spinlblGroup.defaultItem(self._12HrsTime if hours == HOURS12 else self._24HrsTime)
+        self.spinlblGroup.defaultItem(self._12HrsTime if hours == constants.HOURS12 else self._24HrsTime)
 
     def set12Hrs(self, val: int):
         self._12HrsTime.setValue(val)
@@ -198,32 +198,38 @@ class SpinTimePickerModern(_SpinBaseClass):
 
     def configure_12HrsTime(self, **kwargs):
         super(SpinTimePickerModern, self).configure_12HrsTime(**kwargs)
-        self.spinlblGroup.defaultItem(self._12HrsTime if self.hour_type == HOURS12 else self._24HrsTime)
+        self.spinlblGroup.defaultItem(self._12HrsTime if self.hour_type == constants.HOURS12 else self._24HrsTime)
 
-    def hours12(self):
-        return self._12HrsTime.value()
+    def hours(self):
+        if self.hour_type == constants.HOURS12:
+            return self.hours12()
 
-    def hours24(self):
-        return self._24HrsTime.value()
+        else:
+            return self.hours24()
 
-    def minutes(self):
-        return self._minutes.value()
+    def hours12(self) -> int:
+        return int(self._12HrsTime.value())
 
-    def period(self):
+    def hours24(self) -> int:
+        return int(self._24HrsTime.value())
+
+    def minutes(self) -> int:
+        return int(self._minutes.value())
+
+    def period(self) -> str:
         return self._period.period()
 
-    def formattedTime(self):
-        pass # todo: here
+    def time(self) -> tuple[int, int, str]:
+        return self.hours(), self.minutes(), self.period()
+
 
 if __name__ == "__main__":
     root = tkinter.Tk()
-    root.title("tkTimePicker Modern")
-    root.iconbitmap(default=r'C:\Users\Paul\Desktop\Code Repository\python programs\tkTimePicker\transparent.ico')
 
     canvas = tkinter.Canvas(root)
 
     time_picker = SpinTimePickerModern(root)
-    time_picker.pack_all(constants.HOURS12)
+    time_picker.addAll(constants.HOURS12)
 
     time_picker.pack(expand=1, fill='both')
 
