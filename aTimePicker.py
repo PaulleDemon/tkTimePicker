@@ -128,7 +128,7 @@ class Themes:
                                  clickedcolor="#ffffff", textcolor="#ffffff", canvas_bg="#404040",
                                  alttextwidth=2, bdwidth=0)
 
-        time_picker.configSpin(bg="#404040", height=2, fg="#ffffff", font=("Times", 16), hoverbg="#404040",
+        time_picker.configSpin(bg="#404040", height=1, fg="#ffffff", font=("Times", 16), hoverbg="#404040",
                                hovercolor="#d73333", clickedbg="#2e2d2d", clickedcolor="#d73333")
 
         time_picker.configSeperator(font=("Times", 18, "bold"), width=1)
@@ -153,7 +153,7 @@ if __name__ == "__main__":
 
     theme = Themes(time_picker)
     # theme.setNavyBlue()
-    theme.setDracula()
-    # theme.setPurple()
+    # theme.setDracula()
+    theme.setPurple()
 
     root.mainloop()

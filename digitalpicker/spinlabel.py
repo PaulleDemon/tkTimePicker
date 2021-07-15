@@ -27,7 +27,7 @@ class HoverClickLabel(tkinter.Label):
         self.default_bg = self.cget("bg")
 
     def enter(self, event):
-
+        self.focus_set()
         if not self._clicked:
             self.setDefault()
             self["fg"] = self._option["hovercolor"]
@@ -117,6 +117,7 @@ class SpinLabel(HoverClickLabel):
         else:
             self.current_val = self.number_lst[-1]
 
+        self._current_index = self.number_lst.index(self.current_val)
         self.updateLabel()
 
         self.previous_key = [self.current_val]
@@ -130,14 +131,15 @@ class SpinLabel(HoverClickLabel):
         val = int(val)
         if val in self.number_lst:
             self.current_val = val
+            self._current_index = self.number_lst.index(val)
             self.updateLabel()
 
     def updateLabel(self):
         self["text"] = f"{self.current_val}"
         self.event_generate("<<valueChanged>>")
 
-    def value(self) -> int:
-        return int(self.current_val)
+    def value(self) -> str:
+        return self.current_val
 
     def emptyPreviousKey(self):
         self.previous_key = []
@@ -152,22 +154,29 @@ class SpinLabel(HoverClickLabel):
 
         if number in self.number_lst:
             self.current_val = number
+            self._current_index = self.number_lst.index(number)
 
         self.updateLabel()
-
         self.after(1000, self.emptyPreviousKey)
 
     def wheelEvent(self, event: tkinter.Event):
 
         if event.delta > 0:
 
-            if self.current_val < self.number_lst[-1]:
-                self.current_val += 1
+            if self._current_index < len(self.number_lst):
+                self._current_index += 1
+
+            else:
+                self._current_index = 0
 
         else:
-            if self.current_val > self.number_lst[0]:
-                self.current_val -= 1
+            if self._current_index > 0:
+                self._current_index -= 1
 
+            else:
+                self._current_index = len(self.number_lst)-1
+
+        self.current_val = self.number_lst[self._current_index]
         self.updateLabel()
 
     def keyPress(self, event):

@@ -23,13 +23,13 @@ class HoursClock(BaseClock):
     def hours12(self):
         self.hours = 12
         self.setNumberList(min=1, max=12, start=-2)
-        self.initClockText()
+        self.drawClockText()
         self.configure(defaultPointer=12)
 
     def hours24(self):
         self.hours = 0
         self.setNumberList(min=1, max=24, start=-5)
-        self.initClockText()
+        self.drawClockText()
         self.configure(defaultPointer=1)
 
     def changed(self, event):
@@ -50,7 +50,7 @@ class MinutesClock(BaseClock):
 
     def initMinutes(self):
         self.setNumberList(min=0, max=59, start=-15, step=5, replace_step=True)
-        self.initClockText()
+        self.drawClockText()
         self.configure(alttextwidth=3)
 
     def changed(self, event):

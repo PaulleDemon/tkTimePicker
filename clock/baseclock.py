@@ -2,7 +2,6 @@ import tkinter
 import math
 
 
-# todo: remove moveto and apply coords
 class BaseClock:
 
     def __init__(self, canvas: tkinter.Canvas, **kwargs):
@@ -25,7 +24,7 @@ class BaseClock:
             "headcolor": "#000000",
             "headbdwidth": 0,
             "headbdcolor": "#000000",
-            "clickedcolor": "#000000"
+            "clickedcolor": "#c4c4c4"
         }
 
         if set(kwargs) - set(self._options):
@@ -57,7 +56,7 @@ class BaseClock:
         self._canvas.bind("<Button-1>", self.movehand)
         self._canvas.bind("<Configure>", self.updateClockRect)
 
-    def initClockText(self):  # adds texts to the clock
+    def drawClockText(self):  # adds texts to the clock
 
         self._canvas.delete("tkclocktext")
 
@@ -76,13 +75,13 @@ class BaseClock:
     def setNumberList(self, numberlst: list = None, min: int = None, max: int = None,
                       start: int = None, step=None, replace_step: bool = None):
 
-        if step:
+        if step is not None:
             self.step = step if step > 0 else 1
 
-        if replace_step:
+        if replace_step is not  None:
             self.replaceStep = replace_step
 
-        if start:
+        if start is not None:
             self.start = start
 
         if min is not None and max is not None:
@@ -92,9 +91,11 @@ class BaseClock:
             else:
                 self.numberlst = range(min, max + 1)
 
-
         elif numberlst:
             self.numberlst = numberlst
+            if not self.replaceStep:
+                for x in range(0, len(self.numberlst), step):
+                    self.numberlst.pop(x)
 
         else:
             raise ValueError("Enter value either through min, max or provide a list")
@@ -106,7 +107,7 @@ class BaseClock:
             self.current_index = self.numberlst[0]
 
     def updateClockRect(self, event):  # updates the size of the circle and moves it to center
-        x, y = 10, 10
+
         width, height = event.width, event.height
         size = width if width < height else height
 
@@ -115,8 +116,15 @@ class BaseClock:
             centerX, centerY = width / 2, height / 2
             size -= float(self._canvas.itemcget(self.clock, "width")) + 10
 
-            self._canvas.coords(self.clock, x, y, size, size)
-            self._canvas.moveto(self.clock, centerX - size / 2, centerY - size / 2)
+            # Since some versions of tkinter doesn't contain `moveto` method we need to do
+            # some math to center the clock or tk.call('moveto')
+            clock_coords = self._canvas.coords(self.clock)
+
+            x = clock_coords[0] + (centerX - size/2 - clock_coords[0])
+            y = clock_coords[1] + (centerY - size/2 - clock_coords[1])
+
+            self._canvas.coords(self.clock, x, y, size+x, size+y)
+            # self._canvas.moveto(self.clock, centerX - size / 2, centerY - size / 2)
 
             angle = math.pi * 2 / len(self.numberlst)
             radius = size / 2 - self._options["textoffset"]
@@ -125,8 +133,8 @@ class BaseClock:
 
                 _angle = angle * index
 
-                y = centerY + radius * math.sin(_angle) - 5
-                x = centerX + radius * math.cos(_angle) - 2
+                y = centerY + radius * math.sin(_angle)
+                x = centerX + radius * math.cos(_angle)
 
                 if index % self.step != 0 and self.replaceStep:
                     self._canvas.coords(obj, x - self._options["alttextwidth"],
@@ -174,7 +182,7 @@ class BaseClock:
 
     def movehand(self, event: tkinter.Event):
 
-        _current_id = self._canvas.find_closest(event.x, event.y, halo=25)[0]
+        _current_id = self._canvas.find_closest(event.x, event.y, halo=5)[0]
 
         if _current_id in self._canvas.find_withtag("tkclocktext"):
             self._canvas.itemconfig(self._current_id, fill=self._options["textcolor"])
@@ -187,7 +195,9 @@ class BaseClock:
 
         item_bbox = self._canvas.bbox(self._current_id)
 
-        centerX, centerY = self._canvas.winfo_width() / 2 - 2, self._canvas.winfo_height() / 2 - 5
+        # centerX, centerY = self._canvas.winfo_width() / 2 - 2, self._canvas.winfo_height() / 2 - 5
+        clock_coords = self._canvas.coords(self.clock)
+        centerX, centerY = (clock_coords[0] + clock_coords[2]) / 2, (clock_coords[1] + clock_coords[3]) / 2
 
         itemCX, itemCY = (item_bbox[2] + item_bbox[0]) / 2, (item_bbox[3] + item_bbox[1]) / 2
 
@@ -210,3 +220,17 @@ class BaseClock:
     def bind(self, seq, callback):
         self._canvas.bind(seq, callback)
 
+
+if __name__ == "__main__":
+    root = tkinter.Tk()
+
+    canvas = tkinter.Canvas(root)
+
+    time_picker = BaseClock(canvas)
+    time_picker.setNumberList(numberlst=["A", "B", "C", "D"], step=2, replace_step=False)
+    time_picker.drawClockText()
+    time_picker.bind("<<Changed>>", lambda a: print(time_picker.current()))
+    canvas.pack(expand=1, fill='both')
+
+
+    root.mainloop()

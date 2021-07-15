@@ -2,7 +2,9 @@ import tkinter
 from tkinter import ttk
 
 from typing import Union
-from .spinlabel import SpinLabel, LabelGroup, PeriodLabel
+
+import constants
+from digitalpicker.spinlabel import SpinLabel, LabelGroup, PeriodLabel
 
 
 HOURS12 = 0
@@ -55,15 +57,15 @@ class SpinTimePickerOld(_SpinBaseClass):
 
         self._12HrsTime = tkinter.Spinbox(self, increment=1, from_=1, to=12,
                                           validate="all", validatecommand=(reg12hrs, "%P"),
-                                          command=lambda a: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
+                                          command=lambda: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
 
         self._24HrsTime = tkinter.Spinbox(self, increment=1, from_=0, to=24,
                                           validate="all", validatecommand=(reg24hrs, "%P"),
-                                          command=lambda a: self._24HrsTime.event_generate("<<Changed24Hrs>>"))
+                                          command=lambda: self._24HrsTime.event_generate("<<Changed24Hrs>>"))
 
         self._minutes = tkinter.Spinbox(self, increment=1, from_=0, to=59,
                                         validate="all", validatecommand=(regMin, "%P"),
-                                        command=lambda a: self._minutes.event_generate("<<ChangedMins>>"))
+                                        command=lambda: self._minutes.event_generate("<<ChangedMins>>"))
 
         self._period = ttk.Combobox(self, values=["a.m", "p.m"], textvariable=self.period_var)
         self._period.bind("<<ComboboxSelected>>", lambda a: self._minutes.event_generate("<<ChangedPeriod>>"))
@@ -88,6 +90,24 @@ class SpinTimePickerOld(_SpinBaseClass):
 
     def validateMinutes(self, value):
         return value.isdigit() and (0 <= int(value) <= 59) or value == ""
+
+    def validatePeriod(self, *value):
+
+        period_value = self.period_var.get()
+
+        if period_value.lower() == "a":
+            self.period_var.set("a.m")
+
+        elif period_value.lower() == "p":
+            self.period_var.set("p.m")
+
+        elif period_value in ["a.m", "p.m"]:
+            pass
+
+        else:
+            self.period_var.set("")
+
+        self._period.icursor("end")
 
     def pack_all(self, hours: int, seperator: bool = True):
 
@@ -194,3 +214,18 @@ class SpinTimePickerModern(_SpinBaseClass):
 
     def formattedTime(self):
         pass # todo: here
+
+if __name__ == "__main__":
+    root = tkinter.Tk()
+    root.title("tkTimePicker Modern")
+    root.iconbitmap(default=r'C:\Users\Paul\Desktop\Code Repository\python programs\tkTimePicker\transparent.ico')
+
+    canvas = tkinter.Canvas(root)
+
+    time_picker = SpinTimePickerModern(root)
+    time_picker.pack_all(constants.HOURS12)
+
+    time_picker.pack(expand=1, fill='both')
+
+
+    root.mainloop()
