@@ -232,18 +232,3 @@ class BaseClock:
 
     def bind(self, seq, callback):
         self._canvas.bind(seq, callback)
-
-
-if __name__ == "__main__":
-    root = tkinter.Tk()
-
-    canvas = tkinter.Canvas(root)
-
-    time_picker = BaseClock(canvas, 1, 12, start=-2)
-    # time_picker.setNumberList(numberlst=["A", "B", "C", "D"], step=2, replace_step=False)
-    # time_picker.drawClockText()
-    time_picker.bind("<<Changed>>", lambda a: print(time_picker.current()))
-    canvas.pack(expand=1, fill='both')
-
-
-    root.mainloop()
