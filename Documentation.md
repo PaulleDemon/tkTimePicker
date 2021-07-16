@@ -46,7 +46,7 @@ period=constants.AM  # Specifies the default period
 
 ### AnalogThemes:
 This class provides you with 3 different themes that can be set to `AnalogPicker` widget. 
-visit the [Readme](Readme.md) [Theme](Readme.md#themes)
+visit the [Readme](Readme.md) [Theme](https://github.com/PaulleDemon/tkTimePicker/blob/master/Readme.md#themes)
 `setNavyBlue`
 `setDracula`
 `setPurple`
