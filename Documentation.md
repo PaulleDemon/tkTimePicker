@@ -33,16 +33,23 @@ period=constants.AM  # Specifies the default period
 | configAnalog     | Check The below [base class options](#options)                                | configures both the minutes and hours clock           | 
 | configAnalogHrs  | Check The below [base class options](#options)                                | configures the hours clock                            |
 | configAnalogMins | Check The below [base class options](#options)                                | configures the minutes clock                          | 
-| configSpin       | -                                                                             |                                                       |
-| configSpinHrs    | -                                                                             |                                                       |
-| configSpinMins   | -                                                                             |                                                       |
-| configSeperator  | -                                                                             |                                                       |
-| configurePeriod  | -                                                                             |                                                       |   
-| hours            | -                                                                             |   returns Hours                                       |
-| minutes          | -                                                                             |   returns Minutes                                     |
-| period           | -                                                                             |   returns Period                                      |
-| time             | -                                                                             |   return a tuple containing hours, minutes and period |
+| configSpin       | Check The below [spin class options](#spinoptions)                            | configures both the minutes and hours spin clock      |
+| configSpinHrs    | Check The below [spin class options](#spinoptions)                            | configures hours spin                                 |
+| configSpinMins   | Check The below [spin class options](#spinoptions)                            | configures minutes spin                               |
+| configSeperator  | Check The below [spin class options](#spinoptions)                            | configures separator                                  |
+| configurePeriod  | Check The below [spin class options](#spinoptions)                            | configures period                                     |   
+| hours            | -                                                                             | returns Hours                                         |
+| minutes          | -                                                                             | returns Minutes                                       |
+| period           | -                                                                             | returns Period                                        |
+| time             | -                                                                             | return a tuple containing hours, minutes and period   |
 
+
+### AnalogThemes:
+This class provides you with 3 different themes that can be set to `AnalogPicker` widget. 
+visit the [Readme](Readme.md) [Theme](Readme.md#themes)
+`setNavyBlue`
+`setDracula`
+`setPurple`
 
 ### <a id="base"></a> BaseClock :
     The `BaseClock` class is the super class of `HoursClock` and `MinutesClock`. 
@@ -145,14 +152,62 @@ with the below options.
 
 ### SpinTimePickerOld
 
-| Methods          |               Arguments                                                       |   Description                                  |
-| -----------      | -----------                                                                   |-------                                         |
-| addHours12       | min[int], max[int], numberlst[list], start[int], step[int], replace_step[bool]| Used to set up the clock characters            | 
-| addHours24       | -                                                                             | draws the clock characters on the canvas       |
-| addMinutes       | refer to the above options                                                    | Used to customize the widget                   | 
-| addPeriod        | -                                                                             | Gets the current value the hand is pointing to |
-| addAll           |
-| hours12        | -                                                                             | Gets the current value the hand is pointing to |
-| hours24        | -                                                                             | Gets the current value the hand is pointing to |
-| addPeriod        | -                                                                             | Gets the current value the hand is pointing to |
-| addPeriod        | -                                                                             | Gets the current value the hand is pointing to |
+This class provides methods to construct a timepicker.
+
+The `__init__` method takes `parent` and `orient` argument. The orient argument specifies how they should be oriented,
+either vertically or horizontally.
+
+The below method remains same for both `SpinTimePickerOld` and `SpinTimePickerModern`
+
+| Methods          |               Arguments                                                       |   Description                                             |
+| -----------      | -----------                                                                   |-------                                                    |
+| addHours12       | -                                                                             | adds 12 hours time                                        | 
+| addHours24       | -                                                                             | adds 24 hours time                                        |
+| addMinutes       | -                                                                             | adds minutes                                              | 
+| addPeriod        | -                                                                             | adds period                                               |
+| addAll           | hours[Hours12/Hours24], separator                                             | adds hours(12/24), minutes and period and separator       |
+| hours12          | -                                                                             | returns 12 hours time                                     |
+| hours24          | -                                                                             | returns 24 hours time                                     |
+| hours            | -                                                                             | returns 12hours or 24hours depending upon the type passed |
+| minutes          | -                                                                             | returns current minutes                                   |
+| period           | -                                                                             | returns current period                                    |
+| time             | -                                                                             | returns a tuple containing hours minutes and period       |
+
+### SpinTimePickerModern
+
+This class provides a modern looking timepicker with ability to customize hover color, click color etc.
+The user can change the value either using the mouse wheel or directly by using the keyboard.
+
+The `__init__` takes the following arguments.
+```python
+parent
+orient=constants.HORIZONTAL # specifies how hours, minutes is packed  
+per_orient=constants.VERTICAL # period orientation either vertical or horizontal
+period=constants.AM # default period
+```
+
+The below methods are common for both `SpinTimePickerModern` and `SpinTimePickerOld`
+
+| Methods              |               Arguments                                                       |   Description                                              |
+| -----------          | -----------                                                                   |-------                                                     |
+| configure_12HrsTime  | -                                                                             | customizes 12 hrs time                                     | 
+| configure_24HrsTime  | -                                                                             | customizes 24 hours time                                   |
+| configure_minute     | -                                                                             | customizes minutes                                         | 
+| configure_period     | -                                                                             | customizes period (only for modern timepicker)             |
+| configure_seprator   | -                                                                             | customizes seperator                                       |
+| configureAll         | -                                                                             | customizes 12 hrs, 24 hrs, minutes, periods and seprerator |
+
+**options available for Modern timepicker:**
+The below are set of options available for moder timepicker. Other options that `tkinter.Label` widget accepts
+are also applicable for this widget.
+
+<a id="spinoptions"></a>
+```python
+option = {
+            "hovercolor": "#000000",
+            "hoverbg": "#ffffff",
+            "clickedcolor": "#000000",
+            "clickedbg": "#ffffff"
+        }
+```
+options accepted by `tkinter.Spinbox` are also applicable for old time picker

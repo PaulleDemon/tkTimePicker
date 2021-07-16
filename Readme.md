@@ -27,6 +27,7 @@ for documentation read [Documentation.md](Documentation.md)
 
 Available themes:
 
+<a id="themes"></a>
 **NavyBlue**
 
 ![NavyBlue](ReadMeImages/NavyBlue.png)

@@ -43,7 +43,7 @@ class _SpinBaseClass(tkinter.Frame):
 
 class SpinTimePickerOld(_SpinBaseClass):
 
-    def __init__(self, parent, orient=constants.HORIZONTAL, period_orient=constants.VERTICAL):
+    def __init__(self, parent, orient=constants.HORIZONTAL):
         super(SpinTimePickerOld, self).__init__(parent)
 
         self.hour_type = constants.HOURS12
@@ -110,7 +110,7 @@ class SpinTimePickerOld(_SpinBaseClass):
 
         self._period.icursor("end")
 
-    def addAll(self, hours: int, seperator: bool = True):
+    def addAll(self, hours: int, separator: bool = True):
 
         if hours == constants.HOURS12:
             self.addHours12()
@@ -123,7 +123,7 @@ class SpinTimePickerOld(_SpinBaseClass):
 
         self.hour_type = hours
 
-        if seperator:
+        if separator:
             self._seperator.pack(expand=True, fill='both', side=self.orient)
 
         self.addMinutes()
@@ -191,7 +191,7 @@ class SpinTimePickerModern(_SpinBaseClass):
     def addPeriod(self):
         self._period.pack(expand=True, fill="both", side=self.orient)
 
-    def addAll(self, hours, seperator: bool = True):
+    def addAll(self, hours, separator: bool = True):
 
         self.hour_type = hours
 
@@ -204,7 +204,7 @@ class SpinTimePickerModern(_SpinBaseClass):
         else:
             raise ValueError(f"Unknown type '{hours}'. Use either 0/1")
 
-        if seperator:
+        if separator:
             self._seperator.pack(expand=True, fill='both', side=self.orient)
 
         self.addMinutes()
