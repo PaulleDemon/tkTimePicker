@@ -202,13 +202,12 @@ class BaseClock:
             self._current_id = _current_id
             self._canvas.itemconfig(self._current_id, fill=self._options["clickedcolor"])
             self.updateHand()
-            self._canvas.event_generate("<<Changed>>")
+            self._canvas.event_generate("<<HandMoved>>")
 
     def updateHand(self):
 
         item_bbox = self._canvas.bbox(self._current_id)
 
-        # centerX, centerY = self._canvas.winfo_width() / 2 - 2, self._canvas.winfo_height() / 2 - 5
         clock_coords = self._canvas.coords(self.clock)
         centerX, centerY = (clock_coords[0] + clock_coords[2]) / 2, (clock_coords[1] + clock_coords[3]) / 2
 

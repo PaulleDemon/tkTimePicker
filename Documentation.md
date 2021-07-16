@@ -1,6 +1,6 @@
 # Documentation
 
-**structure**
+### Structure
 ```
 timepicker
 │
@@ -17,7 +17,34 @@ timepicker
 └── clockTimePicker.py [AnalogPicker, AnalogThemes]
 ```
 
-**BaseClock :**
+### AnalogPicker:
+    
+This class provides the complete clock timepicker as shown in the image in the [readme.md](readme.md) file .
+
+The `__init__` method takes the following arguments 
+```python 
+type=constants.HOURS12 # type of clock Hours24 will draw a 24 hours clock
+per_orient=constants.VERTICAL # period orientation constants.HORIZONTAL will align AM and PM horizontally
+period=constants.AM  # Specifies the default period
+```
+
+| Methods          |               Arguments                                                       |   Description                                         |
+| -----------      | -----------                                                                   |-------                                                |
+| configAnalog     | Check The below [base class options](#options)                                | configures both the minutes and hours clock           | 
+| configAnalogHrs  | Check The below [base class options](#options)                                | configures the hours clock                            |
+| configAnalogMins | Check The below [base class options](#options)                                | configures the minutes clock                          | 
+| configSpin       | -                                                                             |                                                       |
+| configSpinHrs    | -                                                                             |                                                       |
+| configSpinMins   | -                                                                             |                                                       |
+| configSeperator  | -                                                                             |                                                       |
+| configurePeriod  | -                                                                             |                                                       |   
+| hours            | -                                                                             |   returns Hours                                       |
+| minutes          | -                                                                             |   returns Minutes                                     |
+| period           | -                                                                             |   returns Period                                      |
+| time             | -                                                                             |   return a tuple containing hours, minutes and period |
+
+
+### <a id="base"></a> BaseClock :
     The `BaseClock` class is the super class of `HoursClock` and `MinutesClock`. 
 This contains all the methods necessary to draw the clock, pointer and text.
 
@@ -52,6 +79,8 @@ provided other parameters will not be considered and `setNumberList` and `drawCl
 Alternatively, You can call the `setNumberList` and then `drawClockText` in the same order.
 
 The available options used to customize the widget are as follows
+
+<a id="options"></a>
 ```python
 options = {
             "min_size": 200, # min-size beyond which the clock won't shrink
@@ -77,5 +106,53 @@ options = {
 ```
 You can use `configure` method of this class to change the options.
 
-**HoursClock**
+**Method :**
 
+| Methods          |               Arguments                                                       |   Description                                  |
+| -----------      | -----------                                                                   |-------                                         |
+| setNumberList    | min[int], max[int], numberlst[list], start[int], step[int], replace_step[bool]| Used to set up the clock characters            | 
+| drawClockText    | -                                                                             | draws the clock characters on the canvas       |
+| configure        | refer to the above options                                                    | Used to customize the widget                   | 
+| current          | -                                                                             | Gets the current value the hand is pointing to |
+
+**Events :**
+
+`<<HandMoved>>` - This event is generated whenever the hand(pointer) is moved.
+
+### HoursClock:
+
+sets up hour clock based on the type provided. `constants.HOURS12` will set up 12 hours clock and 
+`constants.HOURS24` will setup 24 hours clock.
+
+**Options :** canvas: tkinter.Canvas, type: int = constants.HOURS12
+
+**Methods :**
+`getHours` -This takes no arguments and returns the current hour it is pointing to.
+
+**Events :**
+`<<HoursChanged>>` - This event is generated when hours is changed.
+
+### MinutesClock:
+
+Draws the minutes clock. By default it will replace numbers with oval to reduce cluttering. You can change with that 
+with the below options.
+
+**options :** canvas: tkinter.Canvas, step=5, replace_step=True
+
+**Methods :** `getMinutes`- Takes no arguments and returns the current minutes.
+
+**Events :** `<<MinChanged>>` - Generated when the minutes is changed.
+
+### SpinTimePickerOld
+
+| Methods          |               Arguments                                                       |   Description                                  |
+| -----------      | -----------                                                                   |-------                                         |
+| addHours12       | min[int], max[int], numberlst[list], start[int], step[int], replace_step[bool]| Used to set up the clock characters            | 
+| addHours24       | -                                                                             | draws the clock characters on the canvas       |
+| addMinutes       | refer to the above options                                                    | Used to customize the widget                   | 
+| addPeriod        | -                                                                             | Gets the current value the hand is pointing to |
+| addAll           |
+| hours12        | -                                                                             | Gets the current value the hand is pointing to |
+| hours24        | -                                                                             | Gets the current value the hand is pointing to |
+| addPeriod        | -                                                                             | Gets the current value the hand is pointing to |
+| addPeriod        | -                                                                             | Gets the current value the hand is pointing to |

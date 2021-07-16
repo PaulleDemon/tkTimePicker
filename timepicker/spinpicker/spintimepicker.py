@@ -46,6 +46,7 @@ class SpinTimePickerOld(_SpinBaseClass):
     def __init__(self, parent, orient=constants.HORIZONTAL, period_orient=constants.VERTICAL):
         super(SpinTimePickerOld, self).__init__(parent)
 
+        self.hour_type = constants.HOURS12
         self.orient = "top" if orient == constants.VERTICAL else "left"
 
         reg12hrs = self.register(self.validate12hrs)
@@ -70,16 +71,16 @@ class SpinTimePickerOld(_SpinBaseClass):
         self._period = ttk.Combobox(self, values=["a.m", "p.m"], textvariable=self.period_var)
         self._period.bind("<<ComboboxSelected>>", lambda a: self._minutes.event_generate("<<ChangedPeriod>>"))
 
-    def hours12(self):
+    def addHours12(self):
             self._12HrsTime.pack(expand=True, fill="both", side=self.orient)
 
-    def hours24(self):
+    def addHours24(self):
         self._24HrsTime.pack(expand=True, fill="both", side=self.orient)
 
-    def minutes(self):
+    def addMinutes(self):
         self._minutes.pack(expand=True, fill="both", side=self.orient)
 
-    def period(self):
+    def addPeriod(self):
         self._period.pack(expand=True, fill="both", side=self.orient)
 
     def validate12hrs(self, value):
@@ -112,19 +113,43 @@ class SpinTimePickerOld(_SpinBaseClass):
     def addAll(self, hours: int, seperator: bool = True):
 
         if hours == constants.HOURS12:
-            self.hours12()
+            self.addHours12()
 
         elif hours == constants.HOURS24:
-            self.hours24()
+            self.addHours24()
 
         else:
             raise ValueError(f"Unknown type '{hours}'. Use either 0/1")
 
+        self.hour_type = hours
+
         if seperator:
             self._seperator.pack(expand=True, fill='both', side=self.orient)
 
-        self.minutes()
-        self.period()
+        self.addMinutes()
+        self.addPeriod()
+
+    def hours(self) -> int:
+        if self.hour_type == constants.HOURS12:
+            return self.hours12()
+
+        else:
+            return self.hours24()
+
+    def hours12(self) -> int:
+        return int(self._12HrsTime.get())
+
+    def hours24(self) -> int:
+        return int(self._24HrsTime.get())
+
+    def minutes(self) -> int:
+        return int(self._minutes.get())
+
+    def period(self) -> str:
+        return self._period.get()
+
+    def time(self) -> tuple[int, int, str]:
+        return self.hours(), self.minutes(), self.period()
 
 
 class SpinTimePickerModern(_SpinBaseClass):

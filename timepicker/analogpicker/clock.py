@@ -18,7 +18,7 @@ class HoursClock(BaseClock):
         else:
             raise TypeError(f"Unknown type {type}, available types 0, 1")
 
-        self.bind("<<Changed>>", self.changed)
+        self.bind("<<HandMoved>>", self.changed)
 
     def _packHours12(self):
         self.hours = 12
@@ -42,13 +42,13 @@ class HoursClock(BaseClock):
 
 class MinutesClock(BaseClock):
 
-    def __init__(self, canvas: tkinter.Canvas, *args, **kwargs):
+    def __init__(self, canvas: tkinter.Canvas, step=5, replace_step=True, *args, **kwargs):
         super(MinutesClock, self).__init__(canvas, *args, **kwargs)
-        self.initMinutes()
+        self.initMinutes(step=5, replace_step=True)
         self.minutes = 0
-        self.bind("<<Changed>>", self.changed)
+        self.bind("<<HandMoved>>", self.changed)
 
-    def initMinutes(self):
+    def initMinutes(self, step=5, replace_step=True):
         self.setNumberList(min=0, max=59, start=-15, step=5, replace_step=True)
         self.drawClockText()
         self.configure(alttextwidth=3)

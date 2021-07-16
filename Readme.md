@@ -20,7 +20,8 @@ time_picker.pack()
 root.mainloop()
 ```
 
-for more examples refer
+for more examples refer [examples](examples),
+for documentation read [Documentation.md](Documentation.md)
 
 **Clock time picker**
 
