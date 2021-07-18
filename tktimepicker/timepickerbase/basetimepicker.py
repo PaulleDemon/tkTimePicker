@@ -3,7 +3,7 @@ import math
 from tktimepicker import constants
 
 from typing import Union
-from tktimepicker.timepickerbase.spinlabel import SpinLabel, PeriodLabel
+from timepickerbase.spinlabel import SpinLabel, PeriodLabel
 
 
 class BaseClock:
@@ -90,7 +90,7 @@ class BaseClock:
         if step is not None:
             self.step = step if step > 0 else 1
 
-        if replace_step is not  None:
+        if replace_step is not None:
             self.replaceStep = replace_step
 
         if start is not None:
@@ -260,6 +260,7 @@ class SpinBaseClass(tkinter.Frame):  # Base class for SpinTimePickerOld, SpinTim
         self._minutes.configure(**kwargs)
 
     def configure_period(self, **kwargs):
+
         if isinstance(self._period, PeriodLabel):
             self._period.configPeriod(**kwargs)
 
