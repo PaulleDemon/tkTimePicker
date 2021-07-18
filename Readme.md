@@ -31,20 +31,20 @@ Available themes:
 <a id="themes"></a>
 **NavyBlue**
 
-![NavyBlue](ReadMeImages/NavyBlue.png)
+![NavyBlue](https://github.com/PaulleDemon/tkTimePicker/blob/master/ReadMeImages/NavyBlue.png)
 
 **Dracula**
 
-![Dracula](ReadMeImages/DraculaDark.png)
+![Dracula](https://github.com/PaulleDemon/tkTimePicker/blob/master/ReadMeImages/DraculaDark.png)
 
 **purple**
 
-![Purple](ReadMeImages/Purple.png)
+![Purple](https://github.com/PaulleDemon/tkTimePicker/blob/master/ReadMeImages/Purple.png)
 
 **Old-spin timepicker**
 
-![old-spin timepicker](ReadMeImages/SpinTimeold.png)
+![old-spin timepicker](https://github.com/PaulleDemon/tkTimePicker/blob/master/ReadMeImages/SpinTimeold.png)
 
 **Modern-spin timepicker**
 
-![old-spin timepicker](ReadMeImages/SpinTimeModern.png)
+![old-spin timepicker](https://github.com/PaulleDemon/tkTimePicker/blob/master/ReadMeImages/SpinTimeModern.png)
