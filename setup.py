@@ -12,7 +12,7 @@ setup(
     long_description_content_type="text/markdown",
     author='Paul',
     url="https://github.com/PaulleDemon/tkTimePicker",
-    packages=['tktimepicker'],
+    packages=['tktimepicker', 'tktimepicker.timepickerbase'],
     classifiers=[
                 "License :: OSI Approved :: MIT License",
                 "Programming Language :: Python :: 3.6",
@@ -21,6 +21,6 @@ setup(
                 "Programming Language :: Python :: 3.9",
                 "Programming Language :: Python :: 3.10"
             ],
-    keywords=['tkinter', 'timepicker', 'time'],
+    keywords=['tkinter', 'timepicker', 'time', 'tktimepicker'],
     py_modules=["tktimepicker"],
 )
