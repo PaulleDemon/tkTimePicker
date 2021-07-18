@@ -5,7 +5,7 @@ with open("Readme.md", 'r') as f:
 
 setup(
     name='tkTimePicker',
-    version='0.0.1',
+    version='0.1.0',
     description='This package provides you with easy to customize timepickers',
     license="MIT",
     long_description=long_description,
