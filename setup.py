@@ -6,7 +6,7 @@ with open("Readme.md", 'r') as f:
 
 setup(
     name='tkTimePicker',
-    version='0.1.4',
+    version='0.1.6',
     description='This package provides you with easy to customize timepickers',
     license="MIT",
     long_description=long_description,
@@ -22,8 +22,8 @@ setup(
                 "Programming Language :: Python :: 3.10"
             ],
     keywords=['tkinter', 'timepicker', 'time', 'tktimepicker'],
-    # packages=["tktimepicker", "tktimepicker.timepickerbase"],
-    packages=setuptools.find_packages(where="./src"),
+    packages=["tktimepicker", "tktimepicker.timepickerbase"],
+    # packages=setuptools.find_packages(where="./src"),
     python_requires='>=3.6',
     # py_modules=[ "tktimepicker.analogTheme.py",
     #              "tktimepicker.constants.py", "tktimepicker.timepicker.py"],

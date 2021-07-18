@@ -9,9 +9,8 @@ timepicker
 │   └── spinlabel.py [HoverClickLabel, PeriodLabel, SpinLabel, LabelGroup]
 │
 ├── __init__.py
-├── analogTheme.py [ AnalogThemes]
 ├── constants.py 
-└── clockTimePicker.py [AnalogPicker, SpinTimePickerOld, SpinTimePickerModern]
+└── clockTimePicker.py [AnalogPicker, SpinTimePickerOld, SpinTimePickerModern, AnalogThemes]
 ```
 
 ### AnalogPicker:
