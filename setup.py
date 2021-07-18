@@ -1,7 +1,12 @@
 from setuptools import setup
 
-with open("Readme.md", 'r') as f:
-    long_description = f.read()
+try:
+    from pypandoc import convert
+    read_md = lambda f: convert(f, 'rst')
+except ImportError:
+    print("warning: pypandoc module not found, could not convert Markdown to RST")
+    with open("Readme.md", 'r') as f:
+        long_description = f.read()
 
 setup(
     name='tkTimePicker',
