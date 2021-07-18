@@ -1,4 +1,3 @@
-import setuptools
 from setuptools import setup
 
 with open("Readme.md", 'r') as f:
@@ -6,7 +5,7 @@ with open("Readme.md", 'r') as f:
 
 setup(
     name='tkTimePicker',
-    version='0.1.6',
+    version='0.0.1',
     description='This package provides you with easy to customize timepickers',
     license="MIT",
     long_description=long_description,
@@ -22,9 +21,7 @@ setup(
                 "Programming Language :: Python :: 3.10"
             ],
     keywords=['tkinter', 'timepicker', 'time', 'tktimepicker'],
-    packages=["tktimepicker", "tktimepicker.timepickerbase"],
-    # packages=setuptools.find_packages(where="./src"),
+    packages=["tktimepicker"],
+    include_package_data=True,
     python_requires='>=3.6',
-    # py_modules=[ "tktimepicker.analogTheme.py",
-    #              "tktimepicker.constants.py", "tktimepicker.timepicker.py"],
 )

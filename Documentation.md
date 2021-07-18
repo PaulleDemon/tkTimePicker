@@ -4,11 +4,9 @@
 ```
 timepicker
 │
-├── timepickerbase
-│   ├──  basetimepicker.py [BaseClock, SpinBaseClass, HoursClock, MinutesClock]
-│   └── spinlabel.py [HoverClickLabel, PeriodLabel, SpinLabel, LabelGroup]
-│
 ├── __init__.py
+├──  basetimepicker.py [BaseClock, SpinBaseClass, HoursClock, MinutesClock]
+├── spinlabel.py [HoverClickLabel, PeriodLabel, SpinLabel, LabelGroup]
 ├── constants.py 
 └── clockTimePicker.py [AnalogPicker, SpinTimePickerOld, SpinTimePickerModern, AnalogThemes]
 ```

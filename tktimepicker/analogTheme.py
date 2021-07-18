@@ -1,3 +1,0 @@
-from timepicker import AnalogPicker
-
-
