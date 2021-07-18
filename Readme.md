@@ -11,11 +11,11 @@ quick example
 
 ```python
 import tkinter as tk
-from tktimepicker import clockTimePicker
+from tktimepicker import timepicker
 
 root = tk.Tk()
 
-time_picker = clockTimePicker.AnalogPicker(root)
+time_picker = timepicker.AnalogPicker(root)
 time_picker.pack()
 
 root.mainloop()

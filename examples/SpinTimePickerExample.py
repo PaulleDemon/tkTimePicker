@@ -1,5 +1,5 @@
 import tkinter as tk
-from tktimepicker.clockTimePicker import SpinTimePickerModern, SpinTimePickerOld
+from tktimepicker.timepicker import SpinTimePickerModern, SpinTimePickerOld
 from tktimepicker import constants
 
 

@@ -1,4 +1,4 @@
-from clockTimePicker import AnalogPicker
+from timepicker import AnalogPicker
 
 
 class AnalogThemes:

@@ -327,7 +327,7 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
 
 if __name__ == "__main__":
 
-    # from analogTheme import AnalogThemes
+    from analogTheme import AnalogThemes
 
     root = tkinter.Tk()
 
