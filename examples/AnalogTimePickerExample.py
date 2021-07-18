@@ -1,5 +1,7 @@
 import tkinter as tk
-from timepicker import clockTimePicker
+
+from tktimepicker.analogTheme import AnalogThemes
+from tktimepicker.clockTimePicker import AnalogPicker
 
 
 def updateTime(time):
@@ -10,10 +12,10 @@ def get_time():
 
     top = tk.Toplevel(root)
 
-    time_picker = clockTimePicker.AnalogPicker(top)
+    time_picker = AnalogPicker(top)
     time_picker.pack(expand=True, fill="both")
 
-    theme = clockTimePicker.AnalogThemes(time_picker)
+    theme = AnalogThemes(time_picker)
     theme.setDracula()
     # theme.setNavyBlue()
     # theme.setPurple()

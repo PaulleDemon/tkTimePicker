@@ -8,7 +8,7 @@
   <component name="PyNamespacePackagesService">
     <option name="namespacePackageFolders">
       <list>
-        <option value="$MODULE_DIR$/timepicker" />
+        <option value="$MODULE_DIR$/tktimepicker" />
       </list>
     </option>
   </component>

@@ -1,6 +1,6 @@
 import tkinter
 from typing import Union
-from timepicker import constants
+from tktimepicker import constants
 
 
 class HoverClickLabel(tkinter.Label):

@@ -8,9 +8,10 @@ three types of timepicker:
 3. modern-spin timepicker
 
 quick example
+
 ```python
 import tkinter as tk
-from timepicker import clockTimePicker
+from tktimepicker import clockTimePicker
 
 root = tk.Tk()
 

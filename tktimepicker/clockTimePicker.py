@@ -1,47 +1,124 @@
 import tkinter
+
 from tkinter import ttk
-
-from typing import Union
-
-from timepicker import constants
-from timepicker.spinpicker.spinlabel import SpinLabel, LabelGroup, PeriodLabel
+from tktimepicker import constants
+from timepickerbase.spinlabel import SpinLabel, LabelGroup, PeriodLabel
+from timepickerbase import basetimepicker
 
 
-class _SpinBaseClass(tkinter.Frame):
+class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepicker
 
-    def __init__(self, parent):
-        super(_SpinBaseClass, self).__init__(parent)
+    def __init__(self, parent, type=constants.HOURS12, per_orient=constants.VERTICAL, period=constants.AM):
+        super(AnalogPicker, self).__init__(parent)
+        self.type = type
 
-        self._12HrsTime: Union[tkinter.Spinbox, SpinLabel]
-        self._24HrsTime: Union[tkinter.Spinbox, SpinLabel]
-        self._seperator = tkinter.Label(self, text=":")
-        self._minutes: Union[tkinter.Spinbox, SpinLabel]
-        self._period: PeriodLabel
+        self.hrs_canvas = tkinter.Canvas(self)
+        self.min_canvas = tkinter.Canvas(self)
 
-    def configure_12HrsTime(self, **kwargs):
-        self._12HrsTime.configure(**kwargs)
+        self.hours_picker = basetimepicker.HoursClock(self.hrs_canvas, type)
+        self.minutes_picker = basetimepicker.MinutesClock(self.min_canvas)
 
-    def configure_24HrsTime(self, **kwargs):
-        self._24HrsTime.configure(**kwargs)
+        self.hours_picker.bind("<<HoursChanged>>", self.setHours)
+        self.minutes_picker.bind("<<MinChanged>>", self.setMinutes)
 
-    def configure_minute(self, **kwargs):
-        self._minutes.configure(**kwargs)
+        self.spinPicker = SpinTimePickerModern(self, per_orient=per_orient, period=period)
+        self.spinPicker.bind("<<Hrs12Clicked>>", self.displayHrs)
+        self.spinPicker.bind("<<Hrs24Clicked>>", self.displayHrs)
+        self.spinPicker.bind("<<MinClicked>>", self.displayMin)
 
-    def configure_period(self, **kwargs):
-        if isinstance(self._period, PeriodLabel):
-            self._period.configPeriod(**kwargs)
+        self.spinPicker.addAll(type)
 
-    def configure_seprator(self, **kwargs):
-        self._seperator.configure(**kwargs)
+        self.hrs_displayed = True
 
-    def configureAll(self, **kw):
-        self.configure_12HrsTime(**kw)
-        self.configure_24HrsTime(**kw)
-        self.configure_minute(**kw)
-        self.configure_period(**kw)
+        self.spinPicker.pack(expand=True, fill="both")
+        self.displayHrs()
+
+    def toggle(self, event=None):  # not used
+        self.hrs_displayed = not self.hrs_displayed
+
+        if not self.hrs_displayed:
+            self.displayMin()
+
+    def displayMin(self, event=None):
+        self.hrs_canvas.pack_forget()
+        self.min_canvas.pack(expand=True, fill="both")
+
+    def displayHrs(self, event=None):
+        self.min_canvas.pack_forget()
+        self.hrs_canvas.pack(expand=True, fill="both")
+
+    def setMinutes(self, event=None):
+        self.spinPicker.setMins(self.minutes_picker.getMinutes())
+
+    def setHours(self, event=None):
+        hrs = int(self.hours_picker.getHours())
+
+        if self.type == constants.HOURS12:
+            self.spinPicker.set12Hrs(hrs)
+
+        else:
+            self.spinPicker.set24Hrs(hrs)
+
+    def configAnalog(self, canvas_bg="", **kwargs):
+        self.hours_picker.configure(**kwargs)
+        self.minutes_picker.configure(**kwargs)
+
+        if canvas_bg:
+            self.min_canvas.configure(bg=canvas_bg)
+            self.hrs_canvas.configure(bg=canvas_bg)
+
+    def configSpin(self, **kwargs):
+        self.spinPicker.configureAll(**kwargs)
+
+        for x in ("hovercolor", "hoverbg", "clickedcolor", "clickedbg"):
+            if x in kwargs:
+                kwargs.pop(x)
+
+        self.spinPicker.configure_seprator(**kwargs)
+
+    def configAnalogHrs(self, canvas_bg="", **kwargs):
+        self.hours_picker.configure(**kwargs)
+
+        if canvas_bg:
+            self.hrs_canvas.configure(bg=canvas_bg)
+
+    def configAnalogMins(self, canvas_bg="", **kwargs):
+        self.minutes_picker.configure(**kwargs)
+
+        if canvas_bg:
+            self.min_canvas.configure(bg=canvas_bg)
+
+    def configSpinHrs(self, **kwargs):
+        self.spinPicker.configure_12HrsTime(**kwargs)
+        self.spinPicker.configure_24HrsTime(**kwargs)
+
+    def configSpinMins(self, **kwargs):
+        self.spinPicker.configure_minute(**kwargs)
+
+    def configSeperator(self, **kwargs):
+        self.spinPicker.configure_seprator(**kwargs)
+
+    def configurePeriod(self, **kwargs):
+        self.spinPicker.configure_period(**kwargs)
+
+    def hours(self) -> int:
+        if self.type == constants.HOURS12:
+            return self.spinPicker.hours12()
+
+        else:
+            return self.spinPicker.hours24()
+
+    def minutes(self) -> int:
+        return self.spinPicker.minutes()
+
+    def period(self) -> str:
+        return self.spinPicker.period()
+
+    def time(self) -> tuple[int, int, str]:
+        return self.hours(), self.minutes(), self.period()
 
 
-class SpinTimePickerOld(_SpinBaseClass):
+class SpinTimePickerOld(basetimepicker.SpinBaseClass):
 
     def __init__(self, parent, orient=constants.HORIZONTAL):
         super(SpinTimePickerOld, self).__init__(parent)
@@ -124,7 +201,7 @@ class SpinTimePickerOld(_SpinBaseClass):
         self.hour_type = hours
 
         if separator:
-            self._seperator.pack(expand=True, fill='both', side=self.orient)
+            self._separator.pack(expand=True, fill='both', side=self.orient)
 
         self.addMinutes()
         self.addPeriod()
@@ -152,7 +229,7 @@ class SpinTimePickerOld(_SpinBaseClass):
         return self.hours(), self.minutes(), self.period()
 
 
-class SpinTimePickerModern(_SpinBaseClass):
+class SpinTimePickerModern(basetimepicker.SpinBaseClass):
 
     def __init__(self, parent, orient=constants.HORIZONTAL, per_orient=constants.VERTICAL, period=constants.AM):
         super(SpinTimePickerModern, self).__init__(parent)
@@ -205,7 +282,7 @@ class SpinTimePickerModern(_SpinBaseClass):
             raise ValueError(f"Unknown type '{hours}'. Use either 0/1")
 
         if separator:
-            self._seperator.pack(expand=True, fill='both', side=self.orient)
+            self._separator.pack(expand=True, fill='both', side=self.orient)
 
         self.addMinutes()
         self.addPeriod()
@@ -249,14 +326,15 @@ class SpinTimePickerModern(_SpinBaseClass):
 
 
 if __name__ == "__main__":
+
+    # from analogTheme import AnalogThemes
+
     root = tkinter.Tk()
 
-    canvas = tkinter.Canvas(root)
+    picker = AnalogPicker(root)
+    picker.pack(expand=1, fill='both')
 
-    time_picker = SpinTimePickerModern(root)
-    time_picker.addAll(constants.HOURS12)
-
-    time_picker.pack(expand=1, fill='both')
-
+    theme = AnalogThemes(picker)
+    theme.setNavyBlue()
 
     root.mainloop()

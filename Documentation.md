@@ -4,17 +4,14 @@
 ```
 timepicker
 │
-├── analogpicker
-│   ├──  baseclock.py [BaseClock class]
-│   └── clock.py [HoursClock, MinutesClock]
-│
-├── spinpicker
-│   ├── spinlabel.py [HoverClickLabel, PeriodLabel, SpinLabel, LabelGroup]
-│   └── spintimepicker.py [_SpinBaseClass, SpinTimePickerOld, SpinTimePickerModern]
+├── timepickerbase
+│   ├──  basetimepicker.py [BaseClock, SpinBaseClass, HoursClock, MinutesClock]
+│   └── spinlabel.py [HoverClickLabel, PeriodLabel, SpinLabel, LabelGroup]
 │
 ├── __init__.py
+├── analogTheme.py [ AnalogThemes]
 ├── constants.py 
-└── clockTimePicker.py [AnalogPicker, AnalogThemes]
+└── clockTimePicker.py [AnalogPicker, SpinTimePickerOld, SpinTimePickerModern]
 ```
 
 ### AnalogPicker:
