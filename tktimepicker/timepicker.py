@@ -1,5 +1,6 @@
 import tkinter
 
+from typing import Tuple
 from tkinter import ttk
 from tktimepicker import basetimepicker
 from tktimepicker import constants
@@ -114,7 +115,7 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
     def period(self) -> str:
         return self.spinPicker.period()
 
-    def time(self) -> tuple[int, int, str]:
+    def time(self) -> Tuple[int, int, str]:
         return self.hours(), self.minutes(), self.period()
 
 
@@ -225,7 +226,7 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
     def period(self) -> str:
         return self._period.get()
 
-    def time(self) -> tuple[int, int, str]:
+    def time(self) -> Tuple[int, int, str]:
         return self.hours(), self.minutes(), self.period()
 
 
@@ -321,7 +322,7 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
     def period(self) -> str:
         return self._period.period()
 
-    def time(self) -> tuple[int, int, str]:
+    def time(self) -> Tuple[int, int, str]:
         return self.hours(), self.minutes(), self.period()
 
 
