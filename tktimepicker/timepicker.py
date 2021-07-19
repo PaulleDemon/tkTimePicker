@@ -114,7 +114,7 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
     def period(self) -> str:
         return self.spinPicker.period()
 
-    def time(self) -> tuple[int, int, str]:
+    def time(self) -> (int, int, str):
         return self.hours(), self.minutes(), self.period()
 
 
@@ -225,7 +225,7 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
     def period(self) -> str:
         return self._period.get()
 
-    def time(self) -> tuple[int, int, str]:
+    def time(self) -> (int, int, str):
         return self.hours(), self.minutes(), self.period()
 
 
@@ -321,7 +321,7 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
     def period(self) -> str:
         return self._period.period()
 
-    def time(self) -> tuple[int, int, str]:
+    def time(self) -> (int, int, str):
         return self.hours(), self.minutes(), self.period()
 
 
