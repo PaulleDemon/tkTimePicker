@@ -11,18 +11,21 @@ quick example
 
 ```python
 import tkinter as tk
-from tktimepicker import timepicker
+from tktimepicker import AnalogPicker, AnalogThemes
 
 root = tk.Tk()
 
-time_picker = timepicker.AnalogPicker(root)
-time_picker.pack()
+time_picker = AnalogPicker(root)
+time_picker.pack(expand=True, fill="both")
+
+# theme = AnalogThemes(time_picker)
+# theme.setDracula()
 
 root.mainloop()
 ```
 
-for more examples refer [Examples](https://github.com/PaulleDemon/tkTimePicker/tree/master/examples),
-for documentation read [Documentation](https://github.com/PaulleDemon/tkTimePicker/blob/master/Documentation.md)
+For more examples refer [Examples](https://github.com/PaulleDemon/tkTimePicker/tree/master/examples),
+For documentation read [Documentation](https://github.com/PaulleDemon/tkTimePicker/blob/master/Documentation.md)
 
 **Clock time picker**
 

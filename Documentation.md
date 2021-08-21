@@ -42,7 +42,9 @@ period=constants.AM  # Specifies the default period
 This class provides you with 3 different themes that can be set to `AnalogPicker` widget. 
 visit the [Readme](Readme.md) [Theme](https://github.com/PaulleDemon/tkTimePicker/blob/master/Readme.md#themes)
 
-**Methods Available: **
+**Methods Available:**
+
+None of the below methods takes any arguments.
 
 `setNavyBlue`
 
@@ -84,7 +86,7 @@ replace_step: bool = None # optional
 provided other parameters will not be considered and `setNumberList` and `drawClockText` will not be called.
 Alternatively, You can call the `setNumberList` and then `drawClockText` in the same order.
 
-The available options used to customize the widget are as follows
+The available options used to customize the analog clock widget are as follows
 
 <a id="options"></a>
 ```python

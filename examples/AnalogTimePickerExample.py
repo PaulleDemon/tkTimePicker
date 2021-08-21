@@ -1,5 +1,5 @@
 import tkinter as tk
-from tktimepicker.timepicker import AnalogPicker, AnalogThemes
+from tktimepicker import AnalogPicker, AnalogThemes
 
 
 def updateTime(time):
