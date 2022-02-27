@@ -13,7 +13,7 @@ timepicker
 
 ### AnalogPicker:
     
-This class provides the complete clock timepicker as shown in the image in the [readme.md](readme.md) file .
+This class provides the complete clock timepicker as shown in the image in the [readme.md](https://github.com/PaulleDemon/tkTimePicker/blob/master/Readme.md) file .
 
 The `__init__` method takes the following arguments 
 ```python 
