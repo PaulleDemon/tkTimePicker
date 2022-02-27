@@ -1,2 +1,2 @@
-from timepicker import *
-from constants import *
+from tktimepicker.timepicker import *
+from tktimepicker.constants import *

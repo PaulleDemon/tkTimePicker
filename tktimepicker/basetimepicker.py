@@ -86,7 +86,7 @@ class BaseClock:
 
     def setNumberList(self, min: int = None, max: int = None, numberlst: list = None,
                       start: int = None, step=None, replace_step: bool = None):
-
+        """ sets number list, the list using which the numbers will be drawn """
         if step is not None:
             self.step = step if step > 0 else 1
 
@@ -197,10 +197,11 @@ class BaseClock:
         self._canvas.itemconfig(self._current_id, fill=self._options["clickedcolor"])
 
     def current(self):
+        """ returns current value of where its pointing towards"""
         return self.current_index
 
     def movehand(self, event: tkinter.Event):
-
+        """ moves the hand to closest position of the mouse click """
         _current_id = self._canvas.find_closest(event.x, event.y, halo=self._options["halo"])[0]
 
         if _current_id in self._canvas.find_withtag("tkclocktext"):
@@ -211,7 +212,7 @@ class BaseClock:
             self._canvas.event_generate("<<HandMoved>>")
 
     def updateHand(self):
-
+        """ updates the hand to closest mouse position """
         item_bbox = self._canvas.bbox(self._current_id)
 
         clock_coords = self._canvas.coords(self.clock)
@@ -298,7 +299,7 @@ class HoursClock(BaseClock): # A quick class to create a Hours clock
 
     def _packHours24(self):
         self.hours = 0
-        self.setNumberList(min=1, max=24, start=-5)
+        self.setNumberList(min=0, max=23, start=-6)
         self.drawClockText()
         self.configure(defaultPointer=1)
 

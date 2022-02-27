@@ -205,7 +205,8 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
             self._separator.pack(expand=True, fill='both', side=self.orient)
 
         self.addMinutes()
-        self.addPeriod()
+        if hours == constants.HOURS12:
+            self.addPeriod()
 
     def hours(self) -> int:
         if self.hour_type == constants.HOURS12:
@@ -286,7 +287,9 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
             self._separator.pack(expand=True, fill='both', side=self.orient)
 
         self.addMinutes()
-        self.addPeriod()
+
+        if hours == constants.HOURS12:
+            self.addPeriod()
 
         self.spinlblGroup.defaultItem(self._12HrsTime if hours == constants.HOURS12 else self._24HrsTime)
 

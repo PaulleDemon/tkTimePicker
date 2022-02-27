@@ -12,7 +12,7 @@ quick example
 ```python
 import tkinter as tk
 from tktimepicker import AnalogPicker, AnalogThemes
-
+# note: you can also make use of mouse wheel or keyboard to scroll or enter the spin timepicker
 root = tk.Tk()
 
 time_picker = AnalogPicker(root)
@@ -51,3 +51,14 @@ Available themes:
 **Modern-spin timepicker**
 
 ![old-spin timepicker](https://github.com/PaulleDemon/tkTimePicker/blob/master/ReadMeImages/SpinTimeModern.png?raw=True)
+
+> Note: You can also have your own colors besides this. you can also make use of 24 hrs clock, read the
+> documentation for more info.
+
+**Other libraries you might be interested in**
+
+* [tkvideoplayer](https://pypi.org/project/tkvideoplayer/) - Plays video files in tkinter.
+
+* [tkstylesheet](https://pypi.org/project/tkstylesheet/) - Helps you style your tkinter application using stylesheets.
+
+* [PyCollision](https://pypi.org/project/PyCollision/) - Helps you draw hitboxes for 2d games.

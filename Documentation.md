@@ -17,9 +17,9 @@ This class provides the complete clock timepicker as shown in the image in the [
 
 The `__init__` method takes the following arguments 
 ```python 
-type=constants.HOURS12 # type of clock Hours24 will draw a 24 hours clock
-per_orient=constants.VERTICAL # period orientation constants.HORIZONTAL will align AM and PM horizontally
-period=constants.AM  # Specifies the default period
+type=constants.HOURS12 # type of clock, `constants.Hours24` will draw a 24 hours clock
+per_orient=constants.VERTICAL # period orientation, `constants.HORIZONTAL` will align AM and PM horizontally
+period=constants.AM  # Specifies the default period, `constants.PM` will set PM as default
 ```
 
 | Methods          |               Arguments                                                       |   Description                                         |

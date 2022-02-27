@@ -14,11 +14,11 @@ def get_time():
     time_picker.pack(expand=True, fill="both")
 
     theme = AnalogThemes(time_picker)
-    theme.setDracula()
+    # theme.setDracula()
     # theme.setNavyBlue()
-    # theme.setPurple()
-    ok_btn = tk.Button(top, text="ok", command=lambda: updateTime(time_picker.time()))
-    ok_btn.pack()
+    theme.setPurple()
+    # ok_btn = tk.Button(top, text="ok", command=lambda: updateTime(time_picker.time()))
+    # ok_btn.pack()
 
 
 root = tk.Tk()
