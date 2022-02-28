@@ -138,7 +138,7 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
                                           validate="all", validatecommand=(reg12hrs, "%P"),
                                           command=lambda: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
 
-        self._24HrsTime = tkinter.Spinbox(self, increment=1, from_=0, to=24,
+        self._24HrsTime = tkinter.Spinbox(self, increment=1, from_=0, to=23,
                                           validate="all", validatecommand=(reg24hrs, "%P"),
                                           command=lambda: self._24HrsTime.event_generate("<<Changed24Hrs>>"))
 
@@ -243,7 +243,7 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
         self._12HrsTime.bind("<<valueChanged>>", lambda a: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
         self._12HrsTime.bind("<Button-1>", lambda a: self.event_generate("<<Hrs12Clicked>>"))
 
-        self._24HrsTime = SpinLabel(master=self, min=0, max=24)
+        self._24HrsTime = SpinLabel(master=self, min=0, max=23)
         self._24HrsTime.bind("<<valueChanged>>", lambda a: self._12HrsTime.event_generate("<<Changed24Hrs>>"))
         self._24HrsTime.bind("<Button-1>", lambda a: self.event_generate("<<Hrs24Clicked>>"))
 
