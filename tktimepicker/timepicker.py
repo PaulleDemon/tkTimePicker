@@ -75,7 +75,7 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
             if x in kwargs:
                 kwargs.pop(x)
 
-        self.spinPicker.configure_seprator(**kwargs)
+        self.spinPicker.configure_separator(**kwargs)
 
     def configAnalogHrs(self, canvas_bg="", **kwargs):
         self.hours_picker.configure(**kwargs)
@@ -96,13 +96,14 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
     def configSpinMins(self, **kwargs):
         self.spinPicker.configure_minute(**kwargs)
 
-    def configSeperator(self, **kwargs):
-        self.spinPicker.configure_seprator(**kwargs)
+    def configSeparator(self, **kwargs):
+        self.spinPicker.configure_separator(**kwargs)
 
     def configurePeriod(self, **kwargs):
         self.spinPicker.configure_period(**kwargs)
 
     def hours(self) -> int:
+        """ returns hours in 12 hours clock if set to 12 hours else hours in 24 hour clock will be returned """
         if self.type == constants.HOURS12:
             return self.spinPicker.hours12()
 
@@ -110,12 +111,15 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
             return self.spinPicker.hours24()
 
     def minutes(self) -> int:
+        """ returns minutes """
         return self.spinPicker.minutes()
 
     def period(self) -> str:
+        """ returns period """
         return self.spinPicker.period()
 
     def time(self) -> Tuple[int, int, str]:
+        """ returns hours, minutes and period """
         return self.hours(), self.minutes(), self.period()
 
 
@@ -138,7 +142,7 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
                                           validate="all", validatecommand=(reg12hrs, "%P"),
                                           command=lambda: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
 
-        self._24HrsTime = tkinter.Spinbox(self, increment=1, from_=0, to=24,
+        self._24HrsTime = tkinter.Spinbox(self, increment=1, from_=0, to=23,
                                           validate="all", validatecommand=(reg24hrs, "%P"),
                                           command=lambda: self._24HrsTime.event_generate("<<Changed24Hrs>>"))
 
@@ -150,7 +154,7 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
         self._period.bind("<<ComboboxSelected>>", lambda a: self._minutes.event_generate("<<ChangedPeriod>>"))
 
     def addHours12(self):
-            self._12HrsTime.pack(expand=True, fill="both", side=self.orient)
+        self._12HrsTime.pack(expand=True, fill="both", side=self.orient)
 
     def addHours24(self):
         self._24HrsTime.pack(expand=True, fill="both", side=self.orient)
@@ -165,7 +169,7 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
         return value.isdigit() and (0 <= int(value) <= 12) or value == ""
 
     def validate24hrs(self, value):
-        return value.isdigit() and (0 <= int(value) <= 24) or value == ""
+        return value.isdigit() and (0 <= int(value) <= 23) or value == ""
 
     def validateMinutes(self, value):
         return value.isdigit() and (0 <= int(value) <= 59) or value == ""
@@ -205,10 +209,12 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
             self._separator.pack(expand=True, fill='both', side=self.orient)
 
         self.addMinutes()
+
         if hours == constants.HOURS12:
             self.addPeriod()
 
     def hours(self) -> int:
+        """ returns hours in 12 hours clock if set to 12 hours else hours in 24 hour clock will be returned """
         if self.hour_type == constants.HOURS12:
             return self.hours12()
 
@@ -216,18 +222,23 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
             return self.hours24()
 
     def hours12(self) -> int:
+        """ returns hours in 12 hours clock """
         return int(self._12HrsTime.get())
 
     def hours24(self) -> int:
+        """ returns hours in 24 hours clock """
         return int(self._24HrsTime.get())
 
     def minutes(self) -> int:
+        """ returns minutes """
         return int(self._minutes.get())
 
     def period(self) -> str:
+        """ returns period """
         return self._period.get()
 
     def time(self) -> Tuple[int, int, str]:
+        """ returns hours minutes and period """
         return self.hours(), self.minutes(), self.period()
 
 
@@ -243,7 +254,7 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
         self._12HrsTime.bind("<<valueChanged>>", lambda a: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
         self._12HrsTime.bind("<Button-1>", lambda a: self.event_generate("<<Hrs12Clicked>>"))
 
-        self._24HrsTime = SpinLabel(master=self, min=0, max=24)
+        self._24HrsTime = SpinLabel(master=self, min=0, max=23)
         self._24HrsTime.bind("<<valueChanged>>", lambda a: self._12HrsTime.event_generate("<<Changed24Hrs>>"))
         self._24HrsTime.bind("<Button-1>", lambda a: self.event_generate("<<Hrs24Clicked>>"))
 
@@ -294,19 +305,28 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
         self.spinlblGroup.defaultItem(self._12HrsTime if hours == constants.HOURS12 else self._24HrsTime)
 
     def set12Hrs(self, val: int):
+        """ returns hours in 12 hours clock """
         self._12HrsTime.setValue(val)
 
     def set24Hrs(self, val: int):
+        """ returns hours in 24 hours clock """
         self._24HrsTime.setValue(val)
 
     def setMins(self, val: int):
+        """ sets minutes value """
         self._minutes.setValue(val)
 
     def configure_12HrsTime(self, **kwargs):
         super(SpinTimePickerModern, self).configure_12HrsTime(**kwargs)
-        self.spinlblGroup.defaultItem(self._12HrsTime if self.hour_type == constants.HOURS12 else self._24HrsTime)
+        self.spinlblGroup.defaultItem(self._12HrsTime)
+
+    def configure_24HrsTime(self, **kwargs):
+        super(SpinTimePickerModern, self).configure_24HrsTime(**kwargs)
+        self.spinlblGroup.defaultItem(self._24HrsTime)
 
     def hours(self):
+        """ returns hours in 12 hours clock if set to 12 hours else hours in 24 hour clock will be returned """
+
         if self.hour_type == constants.HOURS12:
             return self.hours12()
 
@@ -317,15 +337,19 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
         return int(self._12HrsTime.value())
 
     def hours24(self) -> int:
+        """ returns hours in 24 hours clock """
         return int(self._24HrsTime.value())
 
     def minutes(self) -> int:
+        """ returns minutes """
         return int(self._minutes.value())
 
     def period(self) -> str:
+        """ returns period AM/PM"""
         return self._period.period()
 
     def time(self) -> Tuple[int, int, str]:
+        """ returns hours, minutes and period"""
         return self.hours(), self.minutes(), self.period()
 
 
@@ -342,7 +366,7 @@ class AnalogThemes:
         self.time_picker.configSpin(bg="#009688", height=2, fg="#ffffff", font=("Times", 16), hoverbg="#00695f",
                                     hovercolor="#b6cbd1", clickedbg="#00695f", clickedcolor="#ffffff")
 
-        self.time_picker.configSeperator(font=("Times", 18, "bold"), width=1)
+        self.time_picker.configSeparator(font=("Times", 18, "bold"), width=1)
 
     def setDracula(self):
         self.time_picker.configAnalog(headcolor="#863434", handcolor="#863434", bg="#363636",
@@ -352,7 +376,7 @@ class AnalogThemes:
         self.time_picker.configSpin(bg="#404040", height=1, fg="#ffffff", font=("Times", 16), hoverbg="#404040",
                                     hovercolor="#d73333", clickedbg="#2e2d2d", clickedcolor="#d73333")
 
-        self.time_picker.configSeperator(font=("Times", 18, "bold"), width=1)
+        self.time_picker.configSeparator(font=("Times", 18, "bold"), width=1)
 
     def setPurple(self):
         self.time_picker.configAnalog(headcolor="#ee333d", handcolor="#ee333d", bg="#71135c",
@@ -361,4 +385,4 @@ class AnalogThemes:
 
         self.time_picker.configSpin(bg="#71135c", height=2, fg="#ffffff", font=("Times", 16), hoverbg="#3d0430",
                                     hovercolor="#ffffff", clickedbg="#ad118c", clickedcolor="#ffffff")
-        self.time_picker.configSeperator(font=("Times", 18, "bold"), width=1)
+        self.time_picker.configSeparator(font=("Times", 18, "bold"), width=1)

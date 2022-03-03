@@ -12,7 +12,7 @@ class HoverClickLabel(tkinter.Label):
             "hovercolor": "#000000",
             "hoverbg": "#ffffff",
             "clickedcolor": "#000000",
-            "clickedbg": "#ffffff"
+            "clickedbg": "#ffffff",
         }
 
         self.setDefault()
@@ -23,6 +23,7 @@ class HoverClickLabel(tkinter.Label):
         self.bind("<Leave>", self.leave)
 
     def setDefault(self):
+        """ sets default background and foreground color """
         self.default_fg = self.cget("fg")
         self.default_bg = self.cget("bg")
 
@@ -97,6 +98,7 @@ class PeriodLabel(tkinter.Frame):
         self._current_period = event.widget.cget("text")
 
     def period(self):
+        """ returns period """
         return self._current_period
 
 
@@ -180,7 +182,7 @@ class SpinLabel(HoverClickLabel):
         self.updateLabel()
 
     def keyPress(self, event):
-
+        """ handles key press for """
         try:
             number = int(event.char)
             self.delayedKey(number)
@@ -196,17 +198,22 @@ class LabelGroup:
         self.current = None
 
     def add(self, item: Union[SpinLabel, HoverClickLabel]):
+        """ adds the label to the group """
         item.bind("<Button-1>", self.setCurrent, add="+")
         self.group.add(item)
 
     def defaultItem(self, item: Union[SpinLabel, HoverClickLabel]):
+        """ sets default widget """
         item.setDefault()
         self.setCurrent(widget=item)
 
     def remove(self, item: Union[SpinLabel, HoverClickLabel]):
+        """ removes from the group """
         self.group.remove(item)
 
     def setCurrent(self, event=None, widget=None):
+        """ marks clicked label in the group """
+
         if self.current:
             self.current.resetColor()
 

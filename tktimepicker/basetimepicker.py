@@ -265,10 +265,11 @@ class SpinBaseClass(tkinter.Frame):  # Base class for SpinTimePickerOld, SpinTim
         if isinstance(self._period, PeriodLabel):
             self._period.configPeriod(**kwargs)
 
-    def configure_seprator(self, **kwargs):
+    def configure_separator(self, **kwargs):
         self._separator.configure(**kwargs)
 
     def configureAll(self, **kw):
+        """ passes the configs to 12 hrs, 24 hrs, minutes and period """
         self.configure_12HrsTime(**kw)
         self.configure_24HrsTime(**kw)
         self.configure_minute(**kw)
@@ -320,11 +321,13 @@ class MinutesClock(BaseClock):  # A class to create minutes clock
         self.bind("<<HandMoved>>", self.changed)
 
     def initMinutes(self, step=5, replace_step=True):
+        """ initializes minutes """
         self.setNumberList(min=0, max=59, start=-15, step=step, replace_step=replace_step)
         self.drawClockText()
         self.configure(alttextwidth=3)
 
     def changed(self, event):
+        """ generates MinChanged when HandMoved"""
         self.minutes = self.current()
         self._canvas.event_generate("<<MinChanged>>")
 

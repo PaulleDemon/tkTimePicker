@@ -52,6 +52,10 @@ Available themes:
 
 ![old-spin timepicker](https://github.com/PaulleDemon/tkTimePicker/blob/master/ReadMeImages/SpinTimeModern.png?raw=True)
 
+> Note: you can also use mouse wheel to change the time when using modern timepicker, 
+> or you can also make use of keypress to change time if you hover over the timepicker.
+
+
 > Note: You can also have your own colors besides this. you can also make use of 24 hrs clock, read the
 > documentation for more info.
 
