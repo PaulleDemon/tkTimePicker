@@ -11,7 +11,7 @@ except ImportError:
 
 setup(
     name='tkTimePicker',
-    version='2.0.1',
+    version='2.0.2',
     description='This package provides you with easy to customize timepickers',
     license="MIT",
     long_description=long_description,

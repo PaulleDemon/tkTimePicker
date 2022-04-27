@@ -36,6 +36,8 @@ period=constants.AM  # Specifies the default period, `constants.PM` will set PM 
 | minutes          | -                                                                             | returns Minutes                                       |
 | period           | -                                                                             | returns Period                                        |
 | time             | -                                                                             | return a tuple containing hours, minutes and period   |
+| setHours         | hrs                                                                           | sets hours  |
+| setMinutes       | mins                                                                          | sets minutes   |
 
 
 ### AnalogThemes:
