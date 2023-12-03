@@ -42,7 +42,7 @@ period=constants.AM  # Specifies the default period, `constants.PM` will set PM 
 
 ### AnalogThemes:
 This class provides you with 3 different themes that can be set to `AnalogPicker` widget. 
-visit the [Readme](Readme.md) [Theme](https://github.com/PaulleDemon/tkTimePicker/blob/master/Readme.md#themes)
+visit the [Readme Theme](https://github.com/PaulleDemon/tkTimePicker/blob/master/Readme.md#themes)
 
 **Methods Available:**
 
@@ -55,7 +55,7 @@ None of the below methods takes any arguments.
 `setPurple`
 
 ### <a id="base"></a> BaseClock :
-    The `BaseClock` class is the super class of `HoursClock` and `MinutesClock`. 
+The `BaseClock` class is the super class of `HoursClock` and `MinutesClock`. 
 This contains all the methods necessary to draw the clock, pointer and text.
 
 The `__init__` method takes the following arguments.
