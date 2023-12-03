@@ -1,8 +1,11 @@
 {
-    "version": "2.5",
-    "unique_name": "tkvideoplayer",
-    "project_name": "TkVideoPlayer",
-    "about": "This is a simple and fully customizable timepicker widgets made for tkinter. You can make use of three types of timepicker:\nclock timepicker\n old-spin timepicker\n modern-spin timepicker",
+    "version": "2.0.2",
+    "unique_name": "tktimepicker",
+    "project_name": "tkTimePicker",
+    "about": "This is a simple and fully customizable timepicker widgets made for tkinter. You can make use of three types of timepicker: \
+                clock timepicker \
+                old-spin timepicker \
+                modern-spin timepicker",
     "source": "Documentation.md",    
     "source_code": "https://github.com/PaulleDemon/tkTimePicker",
     "doc_type": "pgm-lng",
