@@ -77,7 +77,7 @@ I'm a passionate supporter of open-source initiatives. Developing and maintainin
 
 **Other ways to support**
 
-The site [https://adostrings.com](https://adostrings.com) is for sale to support open-source initiatives. Send mail to paul@adostrings.com to get to know more.
+Try my production scale software products on [Gumroad](https://foxcraft.gumroad.com/)
 
-You can also purchase the smaller version of the above site at.
-[https://creators.adostrings.com](https://creators.adostrings.com) or [https://creators.adostrings.com/startups](https://creators.adostrings.com/startups) 
+[<img src="https://github.com/PaulleDemon/PaulleDemon/blob/main/images/gumroad.png" height="150px" width="150px">](https://foxcraft.gumroad.com/)
+
