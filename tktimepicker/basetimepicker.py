@@ -272,8 +272,10 @@ class SpinBaseClass(tkinter.Frame):  # Base class for SpinTimePickerOld, SpinTim
 
         self._12HrsTime: Union[tkinter.Spinbox, SpinLabel]
         self._24HrsTime: Union[tkinter.Spinbox, SpinLabel]
-        self._separator = tkinter.Label(self, text=":")
+        self._separatorHourMin = tkinter.Label(self, text=":")
+        self._separatorMinSec = tkinter.Label(self, text=":")
         self._minutes: Union[tkinter.Spinbox, SpinLabel]
+        self._seconds: Union[tkinter.Spinbox, SpinLabel]
         self._period: PeriodLabel
 
     def configure_12HrsTime(self, **kwargs):
@@ -284,6 +286,9 @@ class SpinBaseClass(tkinter.Frame):  # Base class for SpinTimePickerOld, SpinTim
 
     def configure_minute(self, **kwargs):
         self._minutes.configure(**kwargs)
+        
+    def configure_seconds(self, **kwargs):
+        self._seconds.configure(**kwargs)
 
     def configure_period(self, **kwargs):
 
@@ -291,13 +296,15 @@ class SpinBaseClass(tkinter.Frame):  # Base class for SpinTimePickerOld, SpinTim
             self._period.configPeriod(**kwargs)
 
     def configure_separator(self, **kwargs):
-        self._separator.configure(**kwargs)
+        self._separatorHourMin.configure(**kwargs)
+        self._separatorMinSec.configure(**kwargs)
 
     def configureAll(self, **kw):
         """ passes the configs to 12 hrs, 24 hrs, minutes and period """
         self.configure_12HrsTime(**kw)
         self.configure_24HrsTime(**kw)
         self.configure_minute(**kw)
+        self.configure_seconds(**kw)
         self.configure_period(**kw)
 
 
@@ -334,7 +341,6 @@ class HoursClock(BaseClock): # A quick class to create a Hours clock
         self._canvas.event_generate("<<HoursChanged>>")
 
     def setHours(self, hrs: int):
-        
         self.setPointerIndex(hrs)
         # self.current_index = hrs
         # self.drawClockText()
@@ -367,7 +373,30 @@ class MinutesClock(BaseClock):  # A class to create minutes clock
         return self.minutes
 
     def setMinutes(self, mins: int):
-
         self.setPointerIndex(mins)
 
 
+class SecondsClock(BaseClock): # A class to create seconds clock
+    
+    def __init__(self, canvas: tkinter.Canvas, step=5, replace_step=True, *args, **kwargs):
+        super(SecondsClock, self).__init__(canvas, *args, **kwargs)
+        self.initSeconds(step=step, replace_step=replace_step)
+        self.seconds = 0
+        self.bind("<<HandMoved>>", self.changed)
+
+    def initSeconds(self, step=5, replace_step=True):
+        """ initializes seconds """
+        self.setNumberList(min=0, max=59, start=-15, step=step, replace_step=replace_step)
+        self.drawClockText()
+        self.configure(alttextwidth=3)
+
+    def changed(self, event):
+        """ generates SecChanged when HandMoved"""
+        self.seconds = self.current()
+        self._canvas.event_generate("<<SecChanged>>")
+
+    def getSeconds(self):
+        return self.seconds
+
+    def setSeconds(self, secs: int):
+        self.setPointerIndex(secs)
