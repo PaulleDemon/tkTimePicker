@@ -25,7 +25,7 @@ root.mainloop()
 ```
 
 For more examples refer [Examples](https://github.com/PaulleDemon/tkTimePicker/tree/master/examples),
-For documentation read [Documentation](https://browsedocs.com/BB3qVRTUgrko)
+For documentation read [Documentation](https://github.com/PaulleDemon/tkTimePicker/blob/master/Documentation.md)
 
 **Clock time picker**
 
