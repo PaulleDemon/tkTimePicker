@@ -68,16 +68,3 @@ Available themes:
 * [PyCollision](https://pypi.org/project/PyCollision/) - Helps you draw hitboxes for 2d games.
 
 
-**Support Open-source:**
-  
-I'm a passionate supporter of open-source initiatives. Developing and maintaining open-source projects requires a significant commitment of time and effort. My goal is to transition to working on open-source projects on a full-time basis. If you'd like to support me and the open-source community, please consider making small donations so I can dedicate more time to open-source work.
-[Donate](https://www.buymeacoffee.com/ArtPaul)
-
-[<img src="https://github.com/PaulleDemon/PaulleDemon/blob/main/images/buy-me-coffee.png" height="100px" width="350px">](https://www.buymeacoffee.com/ArtPaul)
-
-**Other ways to support**
-
-Try my production scale software products on [Gumroad](https://foxcraft.gumroad.com/)
-
-[<img src="https://github.com/PaulleDemon/PaulleDemon/blob/main/images/gumroad.png" height="150px" width="150px">](https://foxcraft.gumroad.com/)
-
