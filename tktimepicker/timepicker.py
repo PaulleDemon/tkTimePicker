@@ -15,17 +15,21 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
 
         self.hrs_canvas = tkinter.Canvas(self)
         self.min_canvas = tkinter.Canvas(self)
+        self.sec_canvas = tkinter.Canvas(self)
 
         self.hours_picker = basetimepicker.HoursClock(self.hrs_canvas, type)
         self.minutes_picker = basetimepicker.MinutesClock(self.min_canvas)
+        self.seconds_picker = basetimepicker.SecondsClock(self.sec_canvas)
 
         self.hours_picker.bind("<<HoursChanged>>", self.setSpinHours)
         self.minutes_picker.bind("<<MinChanged>>", self.setSpinMinutes)
+        self.seconds_picker.bind("<<SecChanged>>", self.setSpinSeconds)
 
         self.spinPicker = SpinTimePickerModern(self, per_orient=per_orient, period=period)
         self.spinPicker.bind("<<Hrs12Clicked>>", self.displayHrs)
         self.spinPicker.bind("<<Hrs24Clicked>>", self.displayHrs)
         self.spinPicker.bind("<<MinClicked>>", self.displayMin)
+        self.spinPicker.bind("<<SecClicked>>", self.displaySec)
 
         self.spinPicker.addAll(type)
 
@@ -40,12 +44,19 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
         if not self.hrs_displayed:
             self.displayMin()
 
+    def displaySec(self, event=None):
+        self.hrs_canvas.pack_forget()
+        self.min_canvas.pack_forget()
+        self.sec_canvas.pack(expand=True, fill="both")
+
     def displayMin(self, event=None):
         self.hrs_canvas.pack_forget()
+        self.sec_canvas.pack_forget()
         self.min_canvas.pack(expand=True, fill="both")
 
     def displayHrs(self, event=None):
         self.min_canvas.pack_forget()
+        self.sec_canvas.pack_forget()
         self.hrs_canvas.pack(expand=True, fill="both")
 
     def setHours(self, hrs: int):
@@ -60,6 +71,13 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
     def setMinutes(self, mins: int):
         self.minutes_picker.setMinutes(mins)
         self.spinPicker.setMins(mins)
+
+    def setSeconds(self, secs: int):
+        self.seconds_picker.setSeconds(secs)
+        self.spinPicker.setSecs(secs)
+
+    def setSpinSeconds(self, event=None):
+        self.spinPicker.setSecs(self.seconds_picker.getSeconds())
 
     def setSpinMinutes(self, event=None):
         self.spinPicker.setMins(self.minutes_picker.getMinutes())
@@ -76,8 +94,10 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
     def configAnalog(self, canvas_bg="", **kwargs):
         self.hours_picker.configure(**kwargs)
         self.minutes_picker.configure(**kwargs)
+        self.seconds_picker.configure(**kwargs)
 
         if canvas_bg:
+            self.sec_canvas.configure(bg=canvas_bg)
             self.min_canvas.configure(bg=canvas_bg)
             self.hrs_canvas.configure(bg=canvas_bg)
 
@@ -102,12 +122,21 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
         if canvas_bg:
             self.min_canvas.configure(bg=canvas_bg)
 
+    def configAnalogSecs(self, canvas_bg="", **kwargs):
+        self.seconds_picker.configure(**kwargs)
+
+        if canvas_bg:
+            self.sec_canvas.configure(bg=canvas_bg)
+
     def configSpinHrs(self, **kwargs):
         self.spinPicker.configure_12HrsTime(**kwargs)
         self.spinPicker.configure_24HrsTime(**kwargs)
 
     def configSpinMins(self, **kwargs):
         self.spinPicker.configure_minute(**kwargs)
+
+    def configSpinSecs(self, **kwargs):
+        self.spinPicker.configure_second(**kwargs)
 
     def configSeparator(self, **kwargs):
         self.spinPicker.configure_separator(**kwargs)
@@ -127,13 +156,17 @@ class AnalogPicker(tkinter.Frame):  # Creates the fully functional clock timepic
         """ returns minutes """
         return self.spinPicker.minutes()
 
+    def seconds(self) -> int:
+        """ returns seconds """
+        return self.spinPicker.seconds()
+
     def period(self) -> str:
         """ returns period """
         return self.spinPicker.period()
 
-    def time(self) -> Tuple[int, int, str]:
+    def time(self) -> Tuple[int, int, int, str]:
         """ returns hours, minutes and period """
-        return self.hours(), self.minutes(), self.period()
+        return self.hours(), self.minutes(), self.seconds(), self.period()
 
 
 class SpinTimePickerOld(basetimepicker.SpinBaseClass):
@@ -147,33 +180,52 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
         reg12hrs = self.register(self.validate12hrs)
         reg24hrs = self.register(self.validate24hrs)
         regMin = self.register(self.validateMinutes)
+        regSec = self.register(self.validateSeconds)
 
         self.period_var = tkinter.StringVar(self, value="a.m")
         self.period_var.trace("w", self.validatePeriod)
 
-        self._12HrsTime = tkinter.Spinbox(self, increment=1, from_=1, to=12,
+        self._12HrsTime = tkinter.Spinbox(self, increment=1, from_=1, to=12, wrap=True,
                                           validate="all", validatecommand=(reg12hrs, "%P"),
                                           command=lambda: self._12HrsTime.event_generate("<<Changed12Hrs>>"))
 
-        self._24HrsTime = tkinter.Spinbox(self, increment=1, from_=0, to=23,
+        self._24HrsTime = tkinter.Spinbox(self, increment=1, from_=0, to=23, wrap=True,
                                           validate="all", validatecommand=(reg24hrs, "%P"),
                                           command=lambda: self._24HrsTime.event_generate("<<Changed24Hrs>>"))
 
-        self._minutes = tkinter.Spinbox(self, increment=1, from_=0, to=59,
+        self._minutes = tkinter.Spinbox(self, increment=1, from_=0, to=59, wrap=True,
                                         validate="all", validatecommand=(regMin, "%P"),
                                         command=lambda: self._minutes.event_generate("<<ChangedMins>>"))
+
+        self._seconds = tkinter.Spinbox(self, increment=1, from_=0, to=59, wrap=True,
+                                        validate="all", validatecommand=(regSec, "%P"),
+                                        command=lambda: self._seconds.event_generate("<<ChangedSecs>>"))
 
         self._period = ttk.Combobox(self, values=["a.m", "p.m"], textvariable=self.period_var)
         self._period.bind("<<ComboboxSelected>>", lambda a: self._minutes.event_generate("<<ChangedPeriod>>"))
 
-    def addHours12(self):
+    def addHours12(self, separator: bool = True):
+        self.hour_type = constants.HOURS12
         self._12HrsTime.pack(expand=True, fill="both", side=self.orient)
 
-    def addHours24(self):
+        if separator:
+            self._separatorHourMin.pack(expand=True, fill='both', side=self.orient)
+
+    def addHours24(self, separator: bool = True):
+        self.hour_type = constants.HOURS24
         self._24HrsTime.pack(expand=True, fill="both", side=self.orient)
+
+        if separator:
+            self._separatorHourMin.pack(expand=True, fill='both', side=self.orient)
 
     def addMinutes(self):
         self._minutes.pack(expand=True, fill="both", side=self.orient)
+
+    def addSeconds(self, separator: bool = True):
+        if separator:
+            self._separatorHourMin.pack(expand=True, fill='both', side=self.orient)
+
+        self._seconds.pack(expand=True, fill="both", side=self.orient)
 
     def addPeriod(self):
         self._period.pack(expand=True, fill="both", side=self.orient)
@@ -185,6 +237,9 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
         return value.isdigit() and (0 <= int(value) <= 23) or value == ""
 
     def validateMinutes(self, value):
+        return value.isdigit() and (0 <= int(value) <= 59) or value == ""
+
+    def validateSeconds(self, value):
         return value.isdigit() and (0 <= int(value) <= 59) or value == ""
 
     def validatePeriod(self, *value):
@@ -219,9 +274,14 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
         self.hour_type = hours
 
         if separator:
-            self._separator.pack(expand=True, fill='both', side=self.orient)
+            self._separatorHourMin.pack(expand=True, fill='both', side=self.orient)
 
         self.addMinutes()
+
+        if separator:
+            self._separatorMinSec.pack(expand=True, fill='both', side=self.orient)
+
+        self.addSeconds()
 
         if hours == constants.HOURS12:
             self.addPeriod()
@@ -246,13 +306,17 @@ class SpinTimePickerOld(basetimepicker.SpinBaseClass):
         """ returns minutes """
         return int(self._minutes.get())
 
+    def seconds(self) -> int:
+        """ returns seconds """
+        return int(self._seconds.get())
+
     def period(self) -> str:
         """ returns period """
         return self._period.get()
 
-    def time(self) -> Tuple[int, int, str]:
+    def time(self) -> Tuple[int, int, int, str]:
         """ returns hours minutes and period """
-        return self.hours(), self.minutes(), self.period()
+        return self.hours(), self.minutes(), self.seconds(), self.period()
 
 
 class SpinTimePickerModern(basetimepicker.SpinBaseClass):
@@ -275,21 +339,40 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
         self._minutes.bind("<<valueChanged>>", lambda a: self._minutes.event_generate("<<ChangedMins>>"))
         self._minutes.bind("<Button-1>", lambda a: self.event_generate("<<MinClicked>>"))
 
+        self._seconds = SpinLabel(master=self, min=0, max=59)
+        self._seconds.bind("<<valueChanged>>", lambda a: self._seconds.event_generate("<<ChangedSecs>>"))
+        self._seconds.bind("<Button-1>", lambda a: self.event_generate("<<SecClicked>>"))
+
         self._period = PeriodLabel(self, period, per_orient)
 
         self.spinlblGroup = LabelGroup()
 
-    def addHours12(self):
+    def addHours12(self, separator: bool = True):
+        self.hour_type = constants.HOURS12
         self._12HrsTime.pack(expand=True, fill="both", side=self.orient)
         self.spinlblGroup.add(self._12HrsTime)
+        
+        if separator:
+            self._separatorHourMin.pack(expand=True, fill='both', side=self.orient)
 
-    def addHours24(self):
+    def addHours24(self, separator: bool = True):
+        self.hour_type = constants.HOURS24
         self._24HrsTime.pack(expand=True, fill="both", side=self.orient)
         self.spinlblGroup.add(self._24HrsTime)
+        
+        if separator:
+            self._separatorHourMin.pack(expand=True, fill='both', side=self.orient)
 
     def addMinutes(self):
         self._minutes.pack(expand=True, fill="both", side=self.orient)
         self.spinlblGroup.add(self._minutes)
+
+    def addSeconds(self, separator: bool = True):
+        if separator:
+            self._separatorMinSec.pack(expand=True, fill='both', side=self.orient)
+        
+        self._seconds.pack(expand=True, fill="both", side=self.orient)
+        self.spinlblGroup.add(self._seconds)
 
     def addPeriod(self):
         self._period.pack(expand=True, fill="both", side=self.orient)
@@ -308,9 +391,14 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
             raise ValueError(f"Unknown type '{hours}'. Use either 0/1")
 
         if separator:
-            self._separator.pack(expand=True, fill='both', side=self.orient)
+            self._separatorHourMin.pack(expand=True, fill='both', side=self.orient)
 
         self.addMinutes()
+
+        if separator:
+            self._separatorMinSec.pack(expand=True, fill='both', side=self.orient)
+
+        self. addSeconds()
 
         if hours == constants.HOURS12:
             self.addPeriod()
@@ -328,6 +416,10 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
     def setMins(self, val: int):
         """ sets minutes value """
         self._minutes.setValue(val)
+
+    def setSecs(self, val: int):
+        """ sets seconds value """
+        self._seconds.setValue(val)
 
     def configure_12HrsTime(self, **kwargs):
         super(SpinTimePickerModern, self).configure_12HrsTime(**kwargs)
@@ -357,13 +449,17 @@ class SpinTimePickerModern(basetimepicker.SpinBaseClass):
         """ returns minutes """
         return int(self._minutes.value())
 
+    def seconds(self) -> int:
+        """ returns seconds """
+        return int(self._seconds.value())
+
     def period(self) -> str:
         """ returns period AM/PM"""
         return self._period.period()
 
-    def time(self) -> Tuple[int, int, str]:
+    def time(self) -> Tuple[int, int, int, str]:
         """ returns hours, minutes and period"""
-        return self.hours(), self.minutes(), self.period()
+        return self.hours(), self.minutes(), self.seconds(), self.period()
 
 
 class AnalogThemes:
